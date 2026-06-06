@@ -188,10 +188,14 @@ img{ max-width:100%; height:auto; display:block; }
 .admin-moment h4{ margin:0 0 12px; font-family:var(--serif); color:var(--gold); font-size:15px; letter-spacing:1px; text-transform:uppercase; }
 .admin-photo{ display:flex; gap:12px; align-items:center; margin-bottom:12px; }
 .admin-thumb{ width:84px; height:64px; object-fit:cover; border-radius:8px; border:1px solid var(--border); background:var(--bg-deep); flex:none; }
-.admin-upload{ font-size:13px; color:var(--gold); border:1px dashed var(--gold); border-radius:8px; padding:9px 12px; cursor:pointer; text-align:center; }
+.admin-upload{ display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:14px; font-weight:700; color:var(--gold); background:rgba(201,150,58,.12); border:1px solid var(--gold); border-radius:10px; padding:12px 14px; cursor:pointer; text-align:center; min-height:44px; transition:background .2s ease; }
+.admin-upload:hover{ background:rgba(201,150,58,.22); }
 .admin-upload input{ display:none; }
-.admin-panel label{ display:block; font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin:10px 0 5px; }
-.admin-panel input[type=text], .admin-panel textarea{ width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text); font-family:var(--sans); font-size:15px; resize:vertical; }
+.admin-photo-side{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
+.am-photo-status{ font-size:11px; color:var(--muted); }
+.admin-thumb{ cursor:default; }
+.admin-panel label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin:12px 0 5px; }
+.admin-panel input[type=text], .admin-panel input[type=password], .admin-panel textarea{ width:100%; padding:12px 14px; border-radius:8px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text); font-family:var(--sans); font-size:16px; resize:vertical; }
 .admin-letter{ border-top:1px solid var(--border); padding-top:8px; }
 .admin-foot{ display:flex; flex-wrap:wrap; gap:8px; padding:14px 20px calc(14px + env(safe-area-inset-bottom)); border-top:1px solid var(--border); }
 .admin-panel button{ font-family:var(--sans); font-size:14px; padding:11px 14px; border-radius:9px; border:1px solid var(--border); background:var(--bg-card); color:var(--text); cursor:pointer; flex:1; }
@@ -200,8 +204,37 @@ img{ max-width:100%; height:auto; display:block; }
 .admin-gate-btns button{ font-family:var(--sans); font-size:15px; padding:11px 14px; border-radius:9px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text); cursor:pointer; flex:1; }
 .admin-gate-btns button#admin-enter{ background:var(--gold); color:var(--bg-deep); border-color:var(--gold); font-weight:700; }
 .admin-note{ font-size:12px; color:var(--muted); line-height:1.6; padding:0 20px 18px; margin:0; }
-.admin-toast{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:10060; background:var(--gold); color:var(--bg-deep); font-weight:700; font-size:14px; padding:10px 18px; border-radius:30px; opacity:0; transition:opacity .3s ease; }
+.admin-toast{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:10060; max-width:88vw; text-align:center; background:var(--gold); color:var(--bg-deep); font-weight:700; font-size:14px; padding:10px 18px; border-radius:30px; opacity:0; transition:opacity .3s ease; }
 .admin-toast.show{ opacity:1; }
+.admin-toast.ok{ background:#2e8b57; color:#fff; }
+.admin-intro{ font-size:12.5px; color:var(--muted); line-height:1.6; margin:0 0 16px; padding:11px 13px; border:1px solid var(--border); border-radius:9px; background:rgba(201,150,58,.06); }
+.admin-group-head{ font-family:var(--sans); font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin:2px 0 12px; }
+.admin-moment > summary{ cursor:pointer; list-style:none; font-family:var(--serif); color:var(--gold); font-size:15px; letter-spacing:1px; text-transform:uppercase; padding:2px 0 12px; }
+.admin-moment > summary::-webkit-details-marker{ display:none; }
+.admin-moment > summary::after{ content:'▾'; float:right; opacity:.6; text-transform:none; }
+.admin-moment[open] > summary::after{ content:'▴'; }
+.admin-btnrow{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.admin-collapse{ border:1px solid var(--border); border-radius:10px; padding:0 14px; margin-top:18px; background:rgba(0,0,0,.12); }
+.admin-collapse > summary{ cursor:pointer; list-style:none; padding:14px 0; color:var(--gold); font-family:var(--serif); font-size:15px; letter-spacing:.5px; }
+.admin-collapse > summary::-webkit-details-marker{ display:none; }
+.admin-collapse > summary::after{ content:'▾'; float:right; opacity:.7; }
+.admin-collapse[open] > summary::after{ content:'▴'; }
+.admin-collapse[open]{ padding-bottom:14px; }
+.admin-conn{ font-size:12px; margin:0 0 10px; color:var(--muted); }
+.admin-help{ margin-top:12px; border:1px solid var(--border); border-radius:8px; padding:4px 12px; background:rgba(0,0,0,.18); }
+.admin-help summary{ cursor:pointer; color:var(--gold); font-size:13px; padding:8px 0; }
+.admin-help ol{ margin:8px 0; padding-left:18px; color:var(--muted); font-size:12.5px; line-height:1.75; }
+.admin-help li{ margin-bottom:5px; }
+.admin-link{ display:inline-block; margin:4px 0 8px; color:var(--gold); font-size:13px; font-weight:700; border:1px solid var(--gold); border-radius:8px; padding:10px 14px; text-decoration:none; }
+.admin-foot-help{ font-size:12px; color:var(--muted); padding:12px 20px 0; margin:0; text-align:center; }
+.admin-foot.mini{ padding-top:0; }
+.admin-foot.mini button{ flex:1; font-size:12.5px; min-height:0; padding:9px 12px; color:var(--muted); }
+@media (max-width:600px){
+  .admin-body{ padding:16px 16px; }
+  .admin-panel button{ min-height:48px; }
+  .admin-foot{ flex-direction:column; }
+  .admin-foot.mini{ flex-direction:row; }
+}
 
 /* ════ RESPONSIVE ════ */
 @media (max-width:1024px){
@@ -337,13 +370,16 @@ img{ max-width:100%; height:auto; display:block; }
     <button id="admin-close" aria-label="Close" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;flex:none">✕</button>
   </div>
   <div class="admin-body" id="admin-body"></div>
+  <p class="admin-foot-help"><b>Save</b> = preview on this phone &nbsp;·&nbsp; <b>Publish</b> = make it live for her</p>
   <div class="admin-foot">
-    <button id="admin-publish" class="primary" type="button">Publish to GitHub</button>
     <button id="admin-save" type="button">Save &amp; preview</button>
-    <button id="admin-export" type="button">Download (content.json)</button>
+    <button id="admin-publish" class="primary" type="button">Publish to GitHub</button>
+  </div>
+  <div class="admin-foot mini">
+    <button id="admin-export" type="button">Download .json</button>
     <button id="admin-reset" class="danger" type="button">Reset</button>
   </div>
-  <p class="admin-note">Tap <b>Publish to GitHub</b> to push everything live (text + full-quality photos in one commit). No token? <b>Download (content.json)</b> also downloads any new photos — commit them under <code>photos/</code> yourself.</p>
+  <p class="admin-note">Publish sends your text, photos &amp; song to GitHub in one commit (live in ~1 min). No token yet? Open <b>Publish setup</b> above. No token at all? <b>Download .json</b> also downloads any new photos/song to commit yourself.</p>
 </aside>
 <div class="admin-toast" id="admin-toast" role="status"></div>
 
@@ -539,11 +575,37 @@ img{ max-width:100%; height:auto; display:block; }
     return btoa(bin);
   }
   async function ghApi(url, opts) {
-    const res = await fetch('https://api.github.com' + url, opts);
+    let res;
+    try { res = await fetch('https://api.github.com' + url, opts); }
+    catch (e) { const err = new Error('Network error'); err.status = 0; throw err; }
     const text = await res.text();
     let data = null; try { data = text ? JSON.parse(text) : null; } catch (e) {}
-    if (!res.ok) throw new Error((data && data.message) || ('HTTP ' + res.status));
+    if (!res.ok) { const err = new Error((data && data.message) || ('HTTP ' + res.status)); err.status = res.status; throw err; }
     return data;
+  }
+  function ghError(e) {
+    const s = e && e.status;
+    if (s === 0) return 'No internet, or GitHub is unreachable. Try again.';
+    if (s === 401) return 'Token is wrong or expired — make a new one and Save.';
+    if (s === 403) return 'Token lacks permission. It needs Contents: Read and write on this repo.';
+    if (s === 404) return 'Repo not found. Check your username / repo name (or the token can’t see it).';
+    if (s === 409 || s === 422) return 'The repo changed in the meantime — tap Publish again.';
+    if (s >= 500) return 'GitHub had a server error. Wait a moment and retry.';
+    return (e && e.message) || 'Something went wrong.';
+  }
+  function ghCfgFromForm() {
+    return {
+      owner: $('#gh-owner') ? $('#gh-owner').value.trim() : '',
+      repo: ($('#gh-repo') ? $('#gh-repo').value.trim() : '') || 'anniversary',
+      branch: ($('#gh-branch') ? $('#gh-branch').value.trim() : '') || 'main',
+      token: $('#gh-token') ? $('#gh-token').value.trim() : ''
+    };
+  }
+  function ghConnLabel() {
+    const el = $('#gh-conn'); if (!el) return;
+    const c = ghCfgFromForm();
+    if (c.owner && c.token) { el.textContent = '● Saved on this device — tap "Test connection" to check it.'; el.style.color = 'var(--gold)'; }
+    else { el.textContent = '○ Not set up yet — add your username + token below.'; el.style.color = 'var(--muted)'; }
   }
 
   async function resolveContent() {
@@ -653,7 +715,8 @@ img{ max-width:100%; height:auto; display:block; }
       fr.readAsDataURL(file);
     });
   }
-  function toast(msg) { const t = $('#admin-toast'); if (!t) return; t.textContent = msg; t.classList.add('show'); setTimeout(function () { t.classList.remove('show'); }, 2200); }
+  function toast(msg, ok) { const t = $('#admin-toast'); if (!t) return; t.textContent = msg; t.classList.toggle('ok', !!ok); t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(function () { t.classList.remove('show'); }, 2600); }
+  function openGhSetup() { const d = document.getElementById('gh-setup'); if (d) { d.open = true; d.scrollIntoView({ block: 'center' }); } }
 
   function setupAdmin() {
     const gate = $('#admin-gate'), panel = $('#admin-panel'), body = $('#admin-body');
@@ -681,19 +744,30 @@ img{ max-width:100%; height:auto; display:block; }
       DRAFT = clone(CONTENT);
       clearPending();
       body.innerHTML = '';
+      const intro = document.createElement('p'); intro.className = 'admin-intro';
+      intro.innerHTML = 'Edit anything below, then tap <b>Save</b> to preview it here. When it looks right, tap <b>Publish</b> to make it live for her. Photos &amp; the song upload only when you Publish.';
+      body.appendChild(intro);
+      const ghead = document.createElement('p'); ghead.className = 'admin-group-head'; ghead.textContent = 'Your moments';
+      body.appendChild(ghead);
       DRAFT.moments.forEach(function (m, i) {
-        const sec = document.createElement('section'); sec.className = 'admin-moment'; sec.dataset.i = i;
+        const sec = document.createElement('details'); sec.className = 'admin-moment'; sec.open = true; sec.dataset.i = i;
         sec.innerHTML =
-          '<h4>Moment ' + (i + 1) + '</h4>' +
-          '<div class="admin-photo"><img class="admin-thumb" alt=""><label class="admin-upload">Change photo<input type="file" accept="image/*"></label></div>' +
-          '<label>Date</label><input type="text" class="am-date">' +
-          '<label>Title</label><input type="text" class="am-title">' +
-          '<label>Story / message</label><textarea class="am-caption" rows="4"></textarea>';
+          '<summary></summary>' +
+          '<div class="admin-photo"><img class="admin-thumb" alt=""><div class="admin-photo-side"><label class="admin-upload">＋ Add / change photo<input type="file" accept="image/*"></label><small class="am-photo-status"></small></div></div>' +
+          '<label>Date</label><input type="text" class="am-date" placeholder="e.g. June 2025">' +
+          '<label>Title</label><input type="text" class="am-title" placeholder="a short title">' +
+          '<label>Story / message</label><textarea class="am-caption" rows="4" placeholder="what happened — in your words"></textarea>';
         body.appendChild(sec);
+        const sumEl = $('summary', sec);
+        const setSum = function () { const t = ($('.am-title', sec).value || '').trim(); sumEl.textContent = 'Moment ' + (i + 1) + (t ? ' — ' + (t.length > 24 ? t.slice(0, 24) + '…' : t) : ''); };
+        const isDefault = !m.photo || m.photo === ('photos/moment' + (i + 1) + '.jpg');
+        $('.am-photo-status', sec).textContent = isDefault ? 'Using a placeholder — add your photo' : 'Your photo is set';
         $('.admin-thumb', sec).src = m.photo || ('photos/moment' + (i + 1) + '.jpg');
         $('.am-date', sec).value = m.date || '';
         $('.am-title', sec).value = m.title || '';
         $('.am-caption', sec).value = m.caption || '';
+        setSum();
+        $('.am-title', sec).addEventListener('input', setSum);
         $('.admin-upload input', sec).addEventListener('change', function (e) {
           const f = e.target.files && e.target.files[0]; if (!f) return;
           let ext = (f.name.split('.').pop() || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -707,7 +781,8 @@ img{ max-width:100%; height:auto; display:block; }
             const th = $('.admin-thumb', sec);
             th.onerror = function () { toast('Cannot preview this format — JPG/PNG works best'); };
             th.src = previewUrls[i];
-            toast('Original ready (' + Math.round(f.size / 1024) + ' KB) — Publish to upload');
+            const st = $('.am-photo-status', sec); if (st) st.textContent = '✓ New photo ready — Publish to upload';
+            toast('Original ready (' + Math.round(f.size / 1024) + ' KB) — Publish to upload', true);
           }).catch(function () { toast('Could not read that file'); });
         });
       });
@@ -745,26 +820,48 @@ img{ max-width:100%; height:auto; display:block; }
         }).catch(function () { toast('Could not read that audio file'); });
       });
 
-      const gh = document.createElement('section'); gh.className = 'admin-letter';
-      gh.innerHTML =
-        '<h4 style="color:var(--gold);font-family:var(--serif);font-size:15px;letter-spacing:1px;text-transform:uppercase;margin:4px 0 10px">Publish to GitHub</h4>' +
-        '<label>GitHub username</label><input type="text" id="gh-owner" autocomplete="off">' +
-        '<label>Repo name</label><input type="text" id="gh-repo" autocomplete="off">' +
-        '<label>Branch</label><input type="text" id="gh-branch" autocomplete="off">' +
-        '<label>Access token (saved only on this device)</label><input type="password" id="gh-token" autocomplete="off">' +
-        '<div style="display:flex;gap:8px;margin-top:10px"><button type="button" id="gh-save">Save settings</button><button type="button" id="gh-forget" class="danger">Forget token</button></div>' +
-        '<p class="admin-note" style="padding:10px 0 0">Use a <b>fine-grained token</b> limited to this one repo (Repository permissions &rarr; Contents: Read &amp; write). It is stored only in this browser, never in the site. Publishing commits your text plus any new <b>full-quality photos</b> (as <code>photos/moment#</code> files) in one commit. Revoke the token if you lose the device.</p>';
-      body.appendChild(gh);
       const ghCfg = loadGH();
+      const gh = document.createElement('details'); gh.className = 'admin-collapse'; gh.id = 'gh-setup';
+      gh.open = !ghCfg.token;   // open until set up once, then collapsed to keep the editor clean
+      gh.innerHTML =
+        '<summary>⚙ Publish setup (GitHub) — set once</summary>' +
+        '<p class="admin-conn" id="gh-conn"></p>' +
+        '<label>GitHub username</label><input type="text" id="gh-owner" autocomplete="off" placeholder="e.g. mclards">' +
+        '<label>Repo name</label><input type="text" id="gh-repo" autocomplete="off" placeholder="anniversary">' +
+        '<label>Branch</label><input type="text" id="gh-branch" autocomplete="off" placeholder="main">' +
+        '<label>Access token (kept only on this device)</label><input type="password" id="gh-token" autocomplete="off" placeholder="github_pat_…">' +
+        '<div class="admin-btnrow"><button type="button" id="gh-save">Save</button><button type="button" id="gh-test">Test connection</button><button type="button" id="gh-forget" class="danger">Forget</button></div>' +
+        '<details class="admin-help"><summary>Where do I get a token?</summary>' +
+          '<ol>' +
+          '<li>Tap <b>Open token page</b> below (sign in to GitHub if asked).</li>' +
+          '<li>Give it any name (e.g. “anniversary editor”); pick an expiration.</li>' +
+          '<li><b>Repository access</b> → <i>Only select repositories</i> → choose <b>anniversary</b>.</li>' +
+          '<li><b>Permissions</b> → Repository permissions → <b>Contents</b> → <b>Read and write</b>.</li>' +
+          '<li><b>Generate token</b>, copy it, paste it above, then tap <b>Save</b> → <b>Test connection</b>.</li>' +
+          '</ol>' +
+          '<a class="admin-link" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Open token page ↗</a>' +
+        '</details>' +
+        '<p class="admin-note" style="padding:8px 0 0">The token stays in this browser only, never in the website. Publishing sends your text, photos and song in one commit. Lost your phone? Tap <b>Forget</b>, or delete the token on GitHub.</p>';
+      body.appendChild(gh);
       $('#gh-owner').value = ghCfg.owner || '';
       $('#gh-repo').value = ghCfg.repo || 'anniversary';
       $('#gh-branch').value = ghCfg.branch || 'main';
       $('#gh-token').value = ghCfg.token || '';
-      $('#gh-save').addEventListener('click', function () {
-        saveGH({ owner: $('#gh-owner').value.trim(), repo: $('#gh-repo').value.trim() || 'anniversary', branch: $('#gh-branch').value.trim() || 'main', token: $('#gh-token').value.trim() });
-        toast('GitHub settings saved');
+      ghConnLabel();
+      $('#gh-save').addEventListener('click', function () { saveGH(ghCfgFromForm()); ghConnLabel(); toast('Saved on this device'); });
+      $('#gh-forget').addEventListener('click', function () { $('#gh-token').value = ''; const c = loadGH(); c.token = ''; saveGH(c); ghConnLabel(); toast('Token forgotten'); });
+      $('#gh-test').addEventListener('click', async function () {
+        const c = ghCfgFromForm();
+        if (!c.owner || !c.token) { toast('Enter your username + token first'); return; }
+        saveGH(c); ghConnLabel();
+        const tb = $('#gh-test'); const old = tb.textContent; tb.disabled = true; tb.textContent = 'Testing…';
+        try {
+          const r = await ghApi('/repos/' + c.owner + '/' + c.repo, { headers: { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json' } });
+          const canPush = r && r.permissions && r.permissions.push;
+          toast(canPush ? '✓ Connected — ready to Publish' : '✓ Repo found, but token can’t write (set Contents: Read and write)');
+        } catch (e) { toast('✗ ' + ghError(e)); }
+        finally { tb.disabled = false; tb.textContent = old; }
       });
-      $('#gh-forget').addEventListener('click', function () { $('#gh-token').value = ''; const c = loadGH(); c.token = ''; saveGH(c); toast('Token forgotten'); });
     }
     function readForm() {
       $$('.admin-moment').forEach(function (sec) {
@@ -780,25 +877,22 @@ img{ max-width:100%; height:auto; display:block; }
       if ($('#am-song-artist')) DRAFT.music.artist = $('#am-song-artist').value;
     }
     async function publishToGitHub() {
-      const owner = $('#gh-owner') ? $('#gh-owner').value.trim() : '';
-      const repo = ($('#gh-repo') ? $('#gh-repo').value.trim() : '') || 'anniversary';
-      const branch = ($('#gh-branch') ? $('#gh-branch').value.trim() : '') || 'main';
-      const token = $('#gh-token') ? $('#gh-token').value.trim() : '';
-      if (!owner || !token) { toast('Add your GitHub username + token below'); if ($('#gh-owner')) $('#gh-owner').scrollIntoView({ block: 'center' }); return; }
-      saveGH({ owner: owner, repo: repo, branch: branch, token: token });
+      const c = ghCfgFromForm();
+      if (!c.owner || !c.token) { toast('Set up GitHub first — username + token below'); const el = $('#gh-owner'); if (el) el.scrollIntoView({ block: 'center' }); openGhSetup(); return; }
+      saveGH(c); ghConnLabel();
       readForm();
+      const H = { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' };
+      const base = '/repos/' + c.owner + '/' + c.repo;
       const json = JSON.stringify({ moments: DRAFT.moments, letter: DRAFT.letter, signature: DRAFT.signature, music: DRAFT.music }, null, 2);
-      const b64 = utf8ToB64(json);
-      const H = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' };
       const btn = $('#admin-publish'); const old = btn.textContent; btn.disabled = true; btn.textContent = 'Publishing…';
       try {
-        const base = '/repos/' + owner + '/' + repo;
-        const ref = await ghApi(base + '/git/ref/heads/' + encodeURIComponent(branch), { headers: H });
-        const baseSha = ref.object.sha;
-        const baseCommit = await ghApi(base + '/git/commits/' + baseSha, { headers: H });
-        const treeItems = [];
-        const contentBlob = await ghApi(base + '/git/blobs', { method: 'POST', headers: H, body: JSON.stringify({ content: b64, encoding: 'base64' }) });
-        treeItems.push({ path: 'content.json', mode: '100644', type: 'blob', sha: contentBlob.sha });
+        // 1) Pre-check repo + write access — clearest possible error, before we change anything.
+        const repoInfo = await ghApi(base, { headers: H });
+        if (!(repoInfo && repoInfo.permissions && repoInfo.permissions.push)) {
+          throw Object.assign(new Error('no write'), { status: 403 });
+        }
+        // 2) Create every blob once (content.json + new photos + new song). Blob shas are reusable across retries.
+        const treeItems = [{ path: 'content.json', mode: '100644', type: 'blob', sha: (await ghApi(base + '/git/blobs', { method: 'POST', headers: H, body: JSON.stringify({ content: utf8ToB64(json), encoding: 'base64' }) })).sha }];
         const idxs = Object.keys(pendingFiles);
         for (let k = 0; k < idxs.length; k++) {
           const pf = pendingFiles[idxs[k]];
@@ -807,20 +901,28 @@ img{ max-width:100%; height:auto; display:block; }
           treeItems.push({ path: pf.path, mode: '100644', type: 'blob', sha: pb.sha });
         }
         if (pendingAudio) {
-          btn.textContent = 'Uploading song…';
+          btn.textContent = 'Song…';
           const ab = await ghApi(base + '/git/blobs', { method: 'POST', headers: H, body: JSON.stringify({ content: pendingAudio.base64, encoding: 'base64' }) });
           treeItems.push({ path: pendingAudio.path, mode: '100644', type: 'blob', sha: ab.sha });
         }
-        const tree = await ghApi(base + '/git/trees', { method: 'POST', headers: H, body: JSON.stringify({ base_tree: baseCommit.tree.sha, tree: treeItems }) });
         const extra = (idxs.length ? ' +' + idxs.length + ' photo' + (idxs.length > 1 ? 's' : '') : '') + (pendingAudio ? ' +song' : '');
-        const commit = await ghApi(base + '/git/commits', { method: 'POST', headers: H, body: JSON.stringify({ message: 'Update via editor' + extra, tree: tree.sha, parents: [baseSha] }) });
-        await ghApi(base + '/git/refs/heads/' + encodeURIComponent(branch), { method: 'PATCH', headers: H, body: JSON.stringify({ sha: commit.sha }) });
+        // 3) Commit on a FRESH base each attempt; retry once if the branch moved under us.
+        btn.textContent = 'Saving to GitHub…';
+        let done = false;
+        for (let attempt = 0; attempt < 2 && !done; attempt++) {
+          const ref = await ghApi(base + '/git/ref/heads/' + encodeURIComponent(c.branch), { headers: H });
+          const baseCommit = await ghApi(base + '/git/commits/' + ref.object.sha, { headers: H });
+          const tree = await ghApi(base + '/git/trees', { method: 'POST', headers: H, body: JSON.stringify({ base_tree: baseCommit.tree.sha, tree: treeItems }) });
+          const commit = await ghApi(base + '/git/commits', { method: 'POST', headers: H, body: JSON.stringify({ message: 'Update via editor' + extra, tree: tree.sha, parents: [ref.object.sha] }) });
+          try { await ghApi(base + '/git/refs/heads/' + encodeURIComponent(c.branch), { method: 'PATCH', headers: H, body: JSON.stringify({ sha: commit.sha }) }); done = true; }
+          catch (e) { if ((e.status === 422 || e.status === 409) && attempt === 0) continue; throw e; }
+        }
         CONTENT = clone(DRAFT); saveLocal(CONTENT);
-        const map = previewUrls; pendingFiles = {}; pendingAudio = null;   // committed now; keep previews this session
+        const map = previewUrls; pendingFiles = {}; pendingAudio = null;
         renderTimeline(CONTENT, true, map); setLetterStatic(CONTENT);
-        toast('Published! Live in ~1 min ✓');
+        toast('✓ Published! Live in ~1 min', true);
       } catch (e) {
-        toast('Publish failed: ' + e.message);
+        toast('Publish failed — ' + ghError(e));
       } finally {
         btn.disabled = false; btn.textContent = old;
       }
