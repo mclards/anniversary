@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>For you, Baby ❤</title>
+<meta name="description" content="For you, Jezel. One year in — a little something I made for you.">
+<meta name="author" content="Baba">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0D0B1A">
+
+<!-- Link preview -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="For you, Baby ❤">
+<meta property="og:description" content="365 araw. Isang taon. Patungo sa ating habang-buhay. — Still choosing you, Baby Jezel.">
+<meta property="og:image" content="assets/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Para sa'yo, Baby ❤">
+<meta name="twitter:description" content="365 araw. Isang taon. Patungo sa ating habang-buhay.">
+<meta name="twitter:image" content="assets/og-image.jpg">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>❤️</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&display=swap">
+
+<style>
+/* ════════════════════════════════════════════════════════════════
+   PARA NIMO, BABY — anniversary site for Jezel
+   Single file. Dark-romantic, mobile-first. Cebuano-Tagalog-English.
+   ════════════════════════════════════════════════════════════════ */
+
+:root{
+  --bg-deep:#0D0B1A; --bg-mid:#12101F; --bg-card:#1F1830; --border:#3A2A4A;
+  --gold:#C9963A; --blush:#E8A0B0; --text:#E8E0F0; --muted:#9A8AAA;
+  --accent:#8B1A4A; --footer:#7A5C6E;
+  --serif:'Playfair Display', Georgia, 'Times New Roman', serif;
+  --sans:'Lato', system-ui, -apple-system, Segoe UI, sans-serif;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{
+  margin:0; background:var(--bg-deep); color:var(--text);
+  font-family:var(--sans); font-weight:300; line-height:1.6;
+  overflow-x:hidden; overscroll-behavior-y:none;
+  text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+}
+img{ max-width:100%; height:auto; display:block; }
+::selection{ background:rgba(232,160,176,.25); color:#fff; }
+:focus-visible{ outline:2px solid var(--blush); outline-offset:3px; border-radius:4px; }
+[hidden]{ display:none !important; }   /* ensure hidden attr beats component display rules */
+.section{ position:relative; }
+
+.scroll-progress{
+  position:fixed; top:0; left:0; height:3px; width:0;
+  background:linear-gradient(90deg, var(--accent), var(--gold));
+  z-index:10000; transition:width .12s linear; box-shadow:0 0 10px rgba(201,150,58,.5);
+}
+
+/* ════ HERO ════ */
+.hero{
+  min-height:100vh; min-height:100svh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:24px; background:var(--bg-deep); overflow:hidden;
+}
+.particles{ position:absolute; inset:0; pointer-events:none; z-index:0; }
+.particle{ position:absolute; bottom:-10px; width:3px; height:3px; border-radius:50%; background:#fff; animation:drift linear infinite; }
+@keyframes drift{ from{ transform:translateY(0);} to{ transform:translateY(-110vh);} }
+.hero-inner{ position:relative; z-index:1; width:100%; max-width:900px; }
+.hero-title{
+  font-family:var(--serif); font-weight:700; font-size:clamp(2.45rem, 8vw, 64px);
+  line-height:1.08; color:var(--blush); margin:0 0 18px; letter-spacing:.5px;
+  text-shadow:0 4px 40px rgba(232,160,176,.18);
+}
+.hero-sub{ font-family:var(--sans); font-style:italic; font-weight:300; font-size:clamp(1rem, 4.4vw, 20px); color:var(--muted); margin:0; letter-spacing:.3px; }
+.chevron{ position:absolute; bottom:calc(34px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); z-index:1; color:var(--muted); opacity:.85; animation:bounce 1.5s ease-in-out infinite; }
+.chevron svg{ display:block; width:30px; height:30px; }
+@keyframes bounce{ 0%,100%{ transform:translate(-50%,0);} 50%{ transform:translate(-50%,8px);} }
+.fade{ opacity:0; animation:fadeUp .9s ease forwards; }
+.fade-1{ animation-delay:.8s; } .fade-2{ animation-delay:1.6s; } .fade-3{ animation-delay:2.4s; }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(20px);} to{ opacity:1; transform:translateY(0);} }
+
+/* ════ COUNTER ════ */
+.counter{ background:var(--bg-mid); text-align:center; padding:88px 24px; }
+.counter-label-top{ font-family:var(--sans); font-weight:400; font-size:14px; text-transform:uppercase; letter-spacing:3px; color:var(--muted); margin:0 0 38px; }
+.counter-grid{ display:flex; flex-wrap:nowrap; justify-content:center; align-items:flex-start; gap:clamp(6px,3vw,26px); max-width:900px; margin:0 auto; }
+.cblock{ display:flex; flex-direction:column; align-items:center; min-width:0; }
+.cnum{ font-family:var(--serif); font-weight:700; font-size:clamp(2.2rem,11vw,72px); line-height:1; color:var(--blush); font-variant-numeric:tabular-nums; letter-spacing:1px; }
+.cunit{ font-family:var(--sans); font-weight:400; font-size:13px; text-transform:uppercase; letter-spacing:2px; color:var(--gold); margin-top:12px; }
+.csep{ font-family:var(--serif); font-weight:700; font-size:clamp(2rem,9vw,60px); line-height:1; color:var(--border); padding-top:2px; }
+.counter-label-bot{ font-family:var(--sans); font-style:italic; font-weight:300; font-size:18px; color:var(--muted); margin:40px 0 0; }
+
+/* ════ TIMELINE ════ */
+.timeline{ background:var(--bg-deep); padding:80px 24px; }
+.timeline-head{ text-align:center; margin:0 auto 56px; max-width:680px; }
+.timeline-eyebrow{ font-family:var(--sans); font-weight:400; font-size:12px; text-transform:uppercase; letter-spacing:3px; color:var(--gold); margin:0 0 10px; }
+.timeline-heading{ font-family:var(--serif); font-weight:700; font-size:clamp(1.8rem,6vw,34px); color:var(--text); margin:0; }
+.timeline-inner{ max-width:1100px; margin:0 auto; display:flex; flex-direction:column; gap:42px; }
+.moment{ display:grid; grid-template-columns:1fr 1fr; align-items:stretch; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.moment-photo{ position:relative; min-height:360px; background:var(--bg-mid); cursor:pointer; overflow:hidden; }
+.moment-photo img{ width:100%; height:100%; min-height:360px; object-fit:cover; transition:transform .4s ease, box-shadow .4s ease; }
+.moment-photo:hover img{ transform:scale(1.03); box-shadow:0 0 24px rgba(200,150,160,.25); }
+.moment-photo.missing{ display:flex; align-items:center; justify-content:center; text-align:center; padding:28px;
+  background:radial-gradient(120% 90% at 50% 40%, rgba(139,26,74,.35), transparent 70%), linear-gradient(160deg, var(--bg-deep), var(--bg-card)); }
+.moment-photo.missing::before{ content:"❤"; position:absolute; font-size:60px; color:rgba(232,160,176,.16); top:28%; left:50%; transform:translateX(-50%); }
+.missing-label{ position:relative; z-index:1; font-family:var(--serif); font-size:22px; color:var(--text); }
+.missing-label small{ display:block; margin-top:8px; font-family:var(--sans); font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); }
+.moment-text{ padding:36px 38px; display:flex; flex-direction:column; justify-content:center; }
+.moment-date{ font-family:var(--sans); font-weight:400; font-size:12px; text-transform:uppercase; letter-spacing:2px; color:var(--gold); margin:0 0 12px; }
+.moment-title{ font-family:var(--serif); font-weight:700; font-size:28px; color:var(--text); margin:0 0 14px; line-height:1.2; }
+.moment-caption{ font-family:var(--sans); font-weight:300; font-size:16px; color:var(--muted); line-height:1.7; margin:0; }
+.moment .moment-photo{ order:1; } .moment .moment-text{ order:2; }
+.moment.alt .moment-photo{ order:2; } .moment.alt .moment-text{ order:1; }
+
+/* ════ LETTER ════ */
+.letter{ background:var(--bg-deep); padding:96px 24px; }
+.letter-inner{ max-width:720px; margin:0 auto; text-align:center; }
+.letter-eyebrow{ font-family:var(--sans); font-weight:400; font-size:12px; text-transform:uppercase; letter-spacing:3px; color:var(--gold); margin:0 0 16px; }
+.letter-rule{ width:60px; height:1px; background:var(--border); margin:0 auto 40px; }
+.letter-body{ font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(1.05rem,4.6vw,20px); line-height:1.9; color:var(--text); margin:0; text-align:left; white-space:pre-wrap; min-height:9.5em; }
+.cursor{ display:inline-block; color:var(--blush); font-style:normal; animation:blink 1s step-end infinite; }
+@keyframes blink{ 50%{ opacity:0; } }
+.letter-sign{ font-family:var(--serif); font-style:italic; font-weight:400; font-size:18px; color:var(--gold); margin:34px 0 0; text-align:right; opacity:0; transition:opacity .8s ease; }
+.letter-sign.show{ opacity:1; }
+
+/* ════ FINALE ════ */
+.finale{ min-height:100vh; min-height:100svh; display:flex; align-items:center; justify-content:center; text-align:center; padding:48px 24px; background:var(--bg-mid); }
+.finale-inner{ position:relative; z-index:1; }
+.finale-main{ font-family:var(--serif); font-weight:700; line-height:1.05; font-size:clamp(2.6rem,10vw,64px); margin:0; }
+.finale-main .blush{ display:block; color:var(--blush); }
+.finale-main .gold{ display:block; color:var(--gold); }
+.finale-sub{ font-family:var(--sans); font-style:italic; font-weight:300; font-size:18px; color:var(--muted); margin:26px 0 40px; }
+.replay-btn{ font-family:var(--sans); font-weight:400; font-size:15px; letter-spacing:1px; color:var(--gold); background:transparent; border:1px solid var(--gold); border-radius:40px; padding:13px 30px; cursor:pointer; transition:background .35s ease, color .35s ease, transform .2s ease; }
+.replay-btn:hover{ background:var(--gold); color:var(--bg-deep); }
+.replay-btn:active{ transform:scale(.97); }
+
+/* ════ MUSIC ════ */
+.music-toggle{ position:fixed; right:calc(22px + env(safe-area-inset-right)); bottom:calc(22px + env(safe-area-inset-bottom)); z-index:9999; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(139,26,74,.85); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); border:1px solid var(--gold); color:var(--text); cursor:pointer; font-size:22px; line-height:1; box-shadow:0 6px 20px rgba(0,0,0,.4); transition:transform .25s ease, box-shadow .25s ease, opacity .25s ease; }
+.music-toggle:hover{ transform:scale(1.08); box-shadow:0 8px 26px rgba(139,26,74,.6); }
+.music-toggle.playing{ animation:musicGlow 2.4s ease-in-out infinite; }
+.music-toggle[disabled]{ opacity:.35; cursor:not-allowed; }
+@keyframes musicGlow{ 0%,100%{ box-shadow:0 6px 20px rgba(0,0,0,.4);} 50%{ box-shadow:0 6px 26px rgba(201,150,58,.55);} }
+
+/* ════ FOOTER ════ */
+.footer{ background:var(--bg-deep); text-align:center; padding:64px 24px; }
+.heart{ font-size:30px; color:var(--accent); cursor:pointer; line-height:1; margin-bottom:8px; padding:10px 16px; user-select:none; -webkit-touch-callout:none; display:inline-block; animation:pulse 1.2s ease-in-out infinite; }
+@keyframes pulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.2);} }
+.footer-text{ font-family:var(--sans); font-weight:300; font-size:14px; color:var(--footer); margin:0; letter-spacing:.5px; }
+
+/* ════ LIGHTBOX ════ */
+.lightbox{ position:fixed; inset:0; z-index:10001; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.92); opacity:0; visibility:hidden; transition:opacity .3s ease, visibility .3s ease; }
+.lightbox.open{ opacity:1; visibility:visible; }
+.lightbox img{ max-width:90vw; max-height:90vh; border-radius:8px; box-shadow:0 10px 60px rgba(0,0,0,.6); }
+.lightbox-btn{ position:absolute; background:rgba(31,24,48,.7); border:1px solid var(--border); color:var(--text); width:46px; height:46px; border-radius:50%; cursor:pointer; font-size:24px; line-height:1; display:flex; align-items:center; justify-content:center; transition:background .25s ease; }
+.lightbox-btn:hover{ background:var(--accent); }
+.lightbox-close{ top:calc(20px + env(safe-area-inset-top)); right:calc(20px + env(safe-area-inset-right)); }
+.lightbox-nav{ top:50%; transform:translateY(-50%); }
+.lightbox-nav.prev{ left:calc(16px + env(safe-area-inset-left)); }
+.lightbox-nav.next{ right:calc(16px + env(safe-area-inset-right)); }
+
+/* ════ SCROLL REVEAL ════ */
+.reveal{ opacity:0; transform:translateY(40px); transition:opacity .7s ease, transform .7s ease; }
+.reveal.from-left,.reveal.from-right{ transform:translateY(40px); }
+.reveal.visible{ opacity:1; transform:none; }
+@media (min-width:1025px){ .reveal.from-left{ transform:translate(-40px,30px);} .reveal.from-right{ transform:translate(40px,30px);} }
+
+/* ════ ADMIN EDITOR ════ */
+/* discreet entry: a faint speck in the corner (only you know it's a button) */
+.admin-dot{ position:fixed; left:calc(10px + env(safe-area-inset-left)); bottom:calc(10px + env(safe-area-inset-bottom)); width:34px; height:34px; padding:0; border:none; background:transparent; z-index:9998; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.admin-dot::after{ content:""; width:7px; height:7px; border-radius:50%; background:var(--muted); opacity:.12; transition:opacity .3s ease; }
+.admin-dot:hover::after, .admin-dot:focus-visible::after{ opacity:.6; }
+.admin-gate{ position:fixed; inset:0; z-index:10050; display:flex; align-items:center; justify-content:center; background:rgba(7,6,14,.86); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); padding:24px; }
+.admin-gate-box{ background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:28px 26px; width:100%; max-width:340px; text-align:center; }
+.admin-gate-box h3{ font-family:var(--serif); color:var(--blush); margin:0 0 6px; font-size:24px; }
+.admin-gate-box p{ color:var(--muted); font-size:13px; margin:0 0 18px; }
+.admin-gate-box input{ width:100%; padding:12px 14px; border-radius:9px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text); font-size:16px; }
+.admin-gate-btns{ display:flex; gap:10px; margin-top:14px; }
+.admin-err{ color:#E8A0B0; font-size:13px; margin:12px 0 0; }
+.admin-panel{ position:fixed; top:0; right:0; height:100%; width:min(440px,100vw); z-index:10040; background:var(--bg-mid); border-left:1px solid var(--border); box-shadow:-12px 0 40px rgba(0,0,0,.5); display:flex; flex-direction:column; transform:translateX(100%); transition:transform .35s ease; }
+.admin-panel.open{ transform:translateX(0); }
+.admin-head{ display:flex; align-items:center; justify-content:space-between; padding:calc(16px + env(safe-area-inset-top)) 20px 16px; border-bottom:1px solid var(--border); }
+.admin-head strong{ font-family:var(--serif); color:var(--blush); font-size:18px; }
+.admin-body{ flex:1; overflow-y:auto; padding:18px 20px; -webkit-overflow-scrolling:touch; }
+.admin-moment{ border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:18px; background:rgba(0,0,0,.15); }
+.admin-moment h4{ margin:0 0 12px; font-family:var(--serif); color:var(--gold); font-size:15px; letter-spacing:1px; text-transform:uppercase; }
+.admin-photo{ display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+.admin-thumb{ width:84px; height:64px; object-fit:cover; border-radius:8px; border:1px solid var(--border); background:var(--bg-deep); flex:none; }
+.admin-upload{ font-size:13px; color:var(--gold); border:1px dashed var(--gold); border-radius:8px; padding:9px 12px; cursor:pointer; text-align:center; }
+.admin-upload input{ display:none; }
+.admin-panel label{ display:block; font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin:10px 0 5px; }
+.admin-panel input[type=text], .admin-panel textarea{ width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text); font-family:var(--sans); font-size:15px; resize:vertical; }
+.admin-letter{ border-top:1px solid var(--border); padding-top:8px; }
+.admin-foot{ display:flex; flex-wrap:wrap; gap:8px; padding:14px 20px calc(14px + env(safe-area-inset-bottom)); border-top:1px solid var(--border); }
+.admin-panel button{ font-family:var(--sans); font-size:14px; padding:11px 14px; border-radius:9px; border:1px solid var(--border); background:var(--bg-card); color:var(--text); cursor:pointer; flex:1; }
+.admin-panel button.primary{ background:var(--gold); color:var(--bg-deep); border-color:var(--gold); font-weight:700; }
+.admin-panel button.danger{ color:#E8A0B0; }
+.admin-gate-btns button{ font-family:var(--sans); font-size:15px; padding:11px 14px; border-radius:9px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text); cursor:pointer; flex:1; }
+.admin-gate-btns button#admin-enter{ background:var(--gold); color:var(--bg-deep); border-color:var(--gold); font-weight:700; }
+.admin-note{ font-size:12px; color:var(--muted); line-height:1.6; padding:0 20px 18px; margin:0; }
+.admin-toast{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:10060; background:var(--gold); color:var(--bg-deep); font-weight:700; font-size:14px; padding:10px 18px; border-radius:30px; opacity:0; transition:opacity .3s ease; }
+.admin-toast.show{ opacity:1; }
+
+/* ════ RESPONSIVE ════ */
+@media (max-width:1024px){
+  .moment{ grid-template-columns:1fr; }
+  .moment .moment-photo,.moment.alt .moment-photo{ order:1; }
+  .moment .moment-text,.moment.alt .moment-text{ order:2; }
+  .moment-photo, .moment-photo img{ min-height:300px; }
+  .timeline, .letter, .counter{ padding-left:48px; padding-right:48px; }
+}
+@media (max-width:600px){
+  .counter-label-top{ letter-spacing:2px; margin-bottom:28px; }
+  .csep{ display:none; }
+  .counter-grid{ gap:clamp(8px,3vw,14px); }
+  .cnum{ font-size:clamp(1.85rem,12vw,46px); }
+  .cunit{ font-size:11px; letter-spacing:1.5px; margin-top:9px; }
+  .timeline, .letter, .counter{ padding-left:22px; padding-right:22px; }
+  .moment-text{ padding:28px 24px; }
+  .moment-title{ font-size:24px; }
+  .moment-photo, .moment-photo img{ min-height:240px; }
+  .music-toggle{ right:calc(16px + env(safe-area-inset-right)); bottom:calc(16px + env(safe-area-inset-bottom)); width:54px; height:54px; }
+}
+
+/* ════ REDUCED MOTION ════ */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .particle, .chevron, .heart, .cursor, .music-toggle.playing{ animation:none !important; }
+  .fade{ opacity:1 !important; animation:none; }
+  .reveal{ opacity:1 !important; transform:none !important; transition:none; }
+  .letter-sign{ opacity:1; transition:none; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="scroll-progress" id="progress" aria-hidden="true"></div>
+
+<!-- ════ HERO ════ -->
+<header class="hero section" id="hero">
+  <div class="particles" id="particles" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <h1 class="hero-title fade fade-1">For you, Baby.</h1>
+    <p class="hero-sub fade fade-2">365 araw. Isang taon. Patungo sa ating habang-buhay.</p>
+  </div>
+  <a class="chevron fade fade-3" href="#counter" aria-label="Scroll down">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+  </a>
+</header>
+
+<!-- ════ COUNTER ════ -->
+<section class="counter section reveal" id="counter">
+  <p class="counter-label-top">this is how long we've chosen each other</p>
+  <div class="counter-grid" aria-live="off">
+    <div class="cblock"><span class="cnum" id="c-days">0</span><span class="cunit">Days</span></div>
+    <span class="csep" aria-hidden="true">:</span>
+    <div class="cblock"><span class="cnum" id="c-hrs">00</span><span class="cunit">Hrs</span></div>
+    <span class="csep" aria-hidden="true">:</span>
+    <div class="cblock"><span class="cnum" id="c-min">00</span><span class="cunit">Min</span></div>
+    <span class="csep" aria-hidden="true">:</span>
+    <div class="cblock"><span class="cnum" id="c-sec">00</span><span class="cunit">Sec</span></div>
+  </div>
+  <p class="counter-label-bot">and I'd count every one again.</p>
+</section>
+
+<!-- ════ TIMELINE (cards rendered from content) ════ -->
+<section class="timeline section" id="timeline">
+  <div class="timeline-head">
+    <p class="timeline-eyebrow">our story</p>
+    <h2 class="timeline-heading">the moments I won't forget</h2>
+  </div>
+  <div class="timeline-inner" id="timeline-inner"></div>
+</section>
+
+<!-- ════ LETTER ════ -->
+<section class="letter section reveal" id="letter">
+  <div class="letter-inner">
+    <p class="letter-eyebrow">for you</p>
+    <div class="letter-rule"></div>
+    <p class="letter-body"><span id="letter-text"></span><span class="cursor" id="cursor" hidden>|</span></p>
+    <p class="letter-sign" id="letter-sign"></p>
+  </div>
+</section>
+
+<!-- ════ FINALE ════ -->
+<section class="finale section reveal" id="finale">
+  <div class="finale-inner">
+    <h2 class="finale-main"><span class="blush">One year down,</span><span class="gold">a lifetime to go.</span></h2>
+    <p class="finale-sub">You are more than enough for me, today and always.</p>
+    <button class="replay-btn" id="replay">back to the start ↑</button>
+  </div>
+</section>
+
+<!-- ════ FOOTER ════ -->
+<footer class="footer section">
+  <div class="heart" id="heart" role="button" tabindex="0" aria-label="A heart for you">❤</div>
+  <p class="footer-text">Made with love by Baba &nbsp;•&nbsp; Still choosing you, Baby Jezel &nbsp;•&nbsp; June 2026</p>
+</footer>
+
+<!-- ════ MUSIC ════ -->
+<button class="music-toggle" id="music" aria-label="Play music" aria-pressed="false" title="">
+  <span class="music-icon" id="music-icon" aria-hidden="true">♪</span>
+</button>
+<audio id="audio" src="audio/song.mp3" loop preload="none"></audio>
+
+<!-- Discreet editor entry (faint corner speck; passcode-gated) -->
+<button class="admin-dot" id="admin-dot" aria-label="Editor"></button>
+
+<!-- ════ LIGHTBOX ════ -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo" aria-hidden="true">
+  <button class="lightbox-btn lightbox-close" id="lb-close" aria-label="Close">✕</button>
+  <button class="lightbox-btn lightbox-nav prev" id="lb-prev" aria-label="Previous">‹</button>
+  <img id="lb-img" src="" alt="">
+  <button class="lightbox-btn lightbox-nav next" id="lb-next" aria-label="Next">›</button>
+</div>
+
+<!-- ════ ADMIN (hidden; open with #edit) ════ -->
+<div class="admin-gate" id="admin-gate" hidden>
+  <div class="admin-gate-box">
+    <h3>For your eyes only, Baba</h3>
+    <p>Enter your passcode to edit.</p>
+    <input type="password" id="admin-code" placeholder="Passcode" autocomplete="off">
+    <p class="admin-err" id="admin-err" hidden>Wrong passcode.</p>
+    <div class="admin-gate-btns">
+      <button id="admin-cancel" type="button">Cancel</button>
+      <button id="admin-enter" type="button">Enter</button>
+    </div>
+  </div>
+</div>
+
+<aside class="admin-panel" id="admin-panel" hidden aria-label="Editor">
+  <div class="admin-head">
+    <strong>Edit our story</strong>
+    <button id="admin-close" aria-label="Close" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;flex:none">✕</button>
+  </div>
+  <div class="admin-body" id="admin-body"></div>
+  <div class="admin-foot">
+    <button id="admin-publish" class="primary" type="button">Publish to GitHub</button>
+    <button id="admin-save" type="button">Save &amp; preview</button>
+    <button id="admin-export" type="button">Download (content.json)</button>
+    <button id="admin-reset" class="danger" type="button">Reset</button>
+  </div>
+  <p class="admin-note">Tap <b>Publish to GitHub</b> to push everything live (text + full-quality photos in one commit). No token? <b>Download (content.json)</b> also downloads any new photos — commit them under <code>photos/</code> yourself.</p>
+</aside>
+<div class="admin-toast" id="admin-toast" role="status"></div>
+
+<!-- Default content (Cebuano). Edited copies live in content.json + localStorage. -->
+<script type="application/json" id="default-content">
+{
+  "moments": [
+    { "id": 1, "date": "June 2025", "title": "Where It Started", "caption": "Hindi simple ang umpisa natin, Baby Jezel — magulo, puno ng tanong, and I was overthinking kung tama ba 'to. Pero kahit ganun, hindi kita binitawan. I chose you, kahit takot ako.", "photo": "photos/moment1.jpg" },
+    { "id": 2, "date": "September 2025", "title": "First Dates, Kahit Kapos", "caption": "Maliit lang ang sahod ko noon, minsan wala talagang pera para mag-date. Pero lagi tayong nakakahanap ng paraan para magkita, kahit simple lang. Effort over money, palagi. Yun ang paborito kong mga araw.", "photo": "photos/moment2.jpg" },
+    { "id": 3, "date": "November 2025", "title": "Yung Mga Pagsubok", "caption": "Hindi laging smooth, Baby Jezel. May mga gabi na sobra akong nag-overthink, may mga misunderstanding na akala natin katapusan na. Oo, minsan masyado akong protective — alam ko, age gap lang siguro. Pero pinag-usapan natin, at hindi tayo sumuko.", "photo": "photos/moment3.jpg" },
+    { "id": 4, "date": "February 2026", "title": "When We Got Far", "caption": "Tapos biglang lumayo tayo — LDR na. Bago pa sa amin ang totoong distance, kaya hindi talaga madali noong una. Pero kahit malayo, hindi ako bumitaw. Never.", "photo": "photos/moment4.jpg" },
+    { "id": 5, "date": "April 2026", "title": "Boring Pero Paborito", "caption": "Karamihan sa gabi natin karon, video call na lang — ikaw busy sa phone, ako tahimik lang nakatingin sa'yo. Walang grabe, walang exciting. Pero yun pala, yun na yun. Basta ikaw, okay na ko.", "photo": "photos/moment5.jpg" },
+    { "id": 6, "date": "June 2026", "title": "Now, Kahit Malayo", "caption": "Lagi mong iniisip na hindi ka bagay sa akin o sa pamilya ko kasi mas mataas daw ang status nila. Pero simula pa lang, hindi ako sumasang-ayon diyan, and I never will. Ikaw ang bagay sa akin — walang kinalaman ang pera o pamilya. Kahit gaano kalayo ngayon, ikaw pa rin ang pinili ko.", "photo": "photos/moment6.jpg" }
+  ],
+  "letter": "Baby Jezel,\n\nOne year na tayo. Honestly, di ko akalain we'd make it this far — and not because of you, ha. Kasi ang dami nating pinagdaanan. Hindi simple ang umpisa natin, and now this distance makes it harder pa gyud.\n\nYou always say you're not enough — na hindi ka bagay sa akin, na hindi ka raw bagay sa pamilya ko kasi mas mataas ang status nila. Baby, ilang beses na ba kitang kinontra? I never cared about money or status. Ikaw ang pinili ko — hindi yung sahod mo, hindi yung pamilya mo. Ikaw lang. Always.\n\nOo na, minsan sobra akong mag-alala, medyo controlling, laging tanong kung kumain ka na, kung asa ka. Age gap lang 'yan, promise — natatakot lang akong mawala ka. Sorry sa overthinking, sa mga misunderstanding, sa mga gabing walang pamasahe para magkita tayo.\n\nPero kahit malayo, kahit kapos, ikaw pa rin ang pinili ko. And I'll keep choosing you, promise.\n\nI love you, Baby Jezel. For real — hindi lang 'to pang-video call.",
+  "signature": "— Baba",
+  "music": { "title": "Your Song", "artist": "The Artist", "file": "audio/song.mp3" }
+}
+</script>
+
+<script src="https://unpkg.com/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script>
+"use strict";
+(function () {
+  /* ════════════════════  EDIT THIS  ════════════════════ */
+  const CONFIG = {
+    startDate: '2025-06-08T00:00:00',   // ← your anniversary (local time) — drives the live counter
+    adminCodeHash: 4657503786230626     // ← hash of passcode "admin123"
+    //  Change passcode: open console, run  annivHash('your-new-code')  and paste the number here.
+    //  The song (file, title, artist) is chosen in the editor's "Music" section.
+  };
+  /* ═════════════════════════════════════════════════════ */
+
+  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $  = function (s, c) { return (c || document).querySelector(s); };
+  const $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+  // tiny non-crypto hash (works on file:// — this is obfuscation, not real auth)
+  function cyrb53(str, seed) {
+    seed = seed || 0;
+    var h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+    for (var i = 0, ch; i < str.length; i++) { ch = str.charCodeAt(i); h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677); }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507); h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507); h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+  }
+  window.annivHash = cyrb53;
+
+  const CONFETTI_COLORS = ['#C9963A', '#E8A0B0', '#E8E0F0', '#8B1A4A'];
+  function burst() {
+    if (REDUCED || typeof confetti !== 'function') return;
+    confetti({ particleCount: 180, spread: 100, origin: { y: 0.4 }, colors: CONFETTI_COLORS });
+  }
+
+  /* ── Particles ── */
+  (function particles() {
+    const wrap = $('#particles'); if (!wrap) return;
+    const count = REDUCED ? 10 : 26;
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div'); p.className = 'particle';
+      const size = 2 + Math.random() * 1.5;
+      p.style.width = p.style.height = size.toFixed(1) + 'px';
+      p.style.left = (Math.random() * 100).toFixed(2) + '%';
+      p.style.bottom = (Math.random() * 100 - 10).toFixed(2) + '%';
+      p.style.opacity = (0.2 + Math.random() * 0.4).toFixed(2);
+      if (!REDUCED) { const dur = 10 + Math.random() * 12; p.style.animationDuration = dur.toFixed(1) + 's'; p.style.animationDelay = '-' + (Math.random() * dur).toFixed(1) + 's'; }
+      frag.appendChild(p);
+    }
+    wrap.appendChild(frag);
+  })();
+
+  /* ── Counter ── */
+  (function counter() {
+    const elD = $('#c-days'), elH = $('#c-hrs'), elM = $('#c-min'), elS = $('#c-sec');
+    if (!elD) return;
+    const start = new Date(CONFIG.startDate).getTime();
+    if (isNaN(start)) { elD.textContent = '—'; return; }
+    const pad = function (n) { return String(n).padStart(2, '0'); };
+    function tick() {
+      let diff = Date.now() - start; if (diff < 0) diff = 0;
+      elD.textContent = Math.floor(diff / 86400000);
+      elH.textContent = pad(Math.floor(diff / 3600000) % 24);
+      elM.textContent = pad(Math.floor(diff / 60000) % 60);
+      elS.textContent = pad(Math.floor(diff / 1000) % 60);
+    }
+    tick(); setInterval(tick, 1000);
+  })();
+
+  /* ── Music: editable song + autoplay (load, else first gesture); iOS-safe fade ── */
+  let musicAPI = null;
+  function setupMusic() {
+    const btn = $('#music'), icon = $('#music-icon'), audio = $('#audio');
+    if (!btn || !audio) return null;
+    const MAX = 0.8, STEP = 0.05, MS = 75;
+    let fadeTimer = null, playing = false, broken = false, canFade = null, armed = false;
+    audio.addEventListener('error', function () { broken = true; btn.disabled = true; if (!btn.title) btn.title = 'No song added yet (audio/song.mp3)'; });
+    function fadeSupported() { if (canFade !== null) return canFade; try { audio.volume = 0; canFade = (audio.volume === 0); } catch (e) { canFade = false; } return canFade; }
+    function clearFade() { if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; } }
+    function fadeTo(target, after) {
+      clearFade();
+      fadeTimer = setInterval(function () {
+        var v = audio.volume;
+        if (Math.abs(v - target) <= STEP) { audio.volume = target; clearFade(); if (after) after(); return; }
+        audio.volume = Math.min(MAX, Math.max(0, v + (target > v ? STEP : -STEP)));
+      }, MS);
+    }
+    function setUI(on) { playing = on; btn.classList.toggle('playing', on); btn.setAttribute('aria-pressed', String(on)); btn.setAttribute('aria-label', on ? 'Pause music' : 'Play music'); icon.textContent = on ? '♪' : '♫'; icon.style.opacity = on ? '1' : '.6'; }
+    function start() {
+      if (broken || playing) return Promise.resolve(false);
+      const supported = fadeSupported();
+      if (supported) audio.volume = 0;
+      const pr = audio.play();
+      if (pr && pr.then) return pr.then(function () { if (supported) fadeTo(MAX); else audio.volume = MAX; setUI(true); return true; }).catch(function () { return false; });
+      if (supported) fadeTo(MAX); else audio.volume = MAX; setUI(true); return Promise.resolve(true);
+    }
+    function stop() { if (fadeSupported()) fadeTo(0, function () { audio.pause(); }); else audio.pause(); setUI(false); }
+    btn.addEventListener('click', function () { if (broken) return; if (!playing) start(); else stop(); });
+    let resumeOnReturn = false;
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { if (playing) { resumeOnReturn = true; clearFade(); audio.pause(); } }
+      else if (resumeOnReturn) { resumeOnReturn = false; audio.play().catch(function () {}); if (canFade) audio.volume = MAX; }
+    });
+    function arm() {
+      if (armed) return; armed = true;
+      const evs = ['pointerdown', 'touchstart', 'keydown', 'click', 'scroll'];
+      function go() { start().then(function (okk) { if (okk) off(); }); }
+      function off() { evs.forEach(function (e) { window.removeEventListener(e, go); }); }
+      evs.forEach(function (e) { window.addEventListener(e, go, { passive: true }); });
+    }
+    function autoStart() { if (broken) return; start().then(function (okk) { if (!okk) arm(); }); } // browsers block sound before a gesture; arm fallback
+    return {
+      setSong: function (src, title, artist, autoplay) {
+        if (playing) { clearFade(); audio.pause(); setUI(false); }
+        broken = false; btn.disabled = false; canFade = null; armed = false;
+        if (src) audio.src = src;
+        if (audio.load) audio.load();
+        btn.title = (title || 'Your Song') + ' by ' + (artist || 'The Artist');
+        if (autoplay) autoStart();
+      },
+      autoStart: autoStart
+    };
+  }
+  musicAPI = setupMusic();
+  function applyMusic(c, autoplay) {
+    const m = (c && c.music) || {};
+    if (musicAPI) musicAPI.setSong((m.file && m.file.trim()) || 'audio/song.mp3', m.title, m.artist, autoplay);
+  }
+
+  /* ── Footer heart: 7-click easter egg ── */
+  (function heart() {
+    const h = $('#heart'); if (!h) return;
+    let clicks = 0;
+    function tap() { if (++clicks === 7) { burst(); clicks = 0; } }
+    h.addEventListener('click', tap);
+    h.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(); } });
+  })();
+
+  /* ── Scroll progress ── */
+  (function progress() {
+    const bar = $('#progress'); if (!bar) return;
+    function update() { const h = document.documentElement; const max = h.scrollHeight - h.clientHeight; bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%'; }
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update); update();
+  })();
+
+  /* ════════════════  CONTENT MODEL  ════════════════ */
+  const STORE_KEY = 'anniv_edits_v1';
+  function defaults() { try { return JSON.parse($('#default-content').textContent); } catch (e) { return { moments: [], letter: '', signature: '' }; } }
+  function loadLocal() { try { return JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) { return null; } }
+  function saveLocal(c) { try { localStorage.setItem(STORE_KEY, JSON.stringify(c)); return true; } catch (e) { return false; } }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function merge(base, over) {
+    const out = clone(base);
+    if (over) {
+      if (over.letter != null) out.letter = over.letter;
+      if (over.signature != null) out.signature = over.signature;
+      if (over.music) out.music = Object.assign({}, out.music || {}, over.music);
+      if (Array.isArray(over.moments)) over.moments.forEach(function (m, i) { out.moments[i] = Object.assign({}, out.moments[i] || {}, m); });
+    }
+    return out;
+  }
+  let CONTENT = null;
+
+  // ── GitHub publish helpers (token stored only in this browser) ──
+  const GH_KEY = 'anniv_gh';
+  function loadGH() { try { return JSON.parse(localStorage.getItem(GH_KEY) || '{}'); } catch (e) { return {}; } }
+  function saveGH(o) { try { localStorage.setItem(GH_KEY, JSON.stringify(o)); } catch (e) {} }
+  function utf8ToB64(str) {
+    const bytes = new TextEncoder().encode(str);
+    let bin = ''; const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    return btoa(bin);
+  }
+  async function ghApi(url, opts) {
+    const res = await fetch('https://api.github.com' + url, opts);
+    const text = await res.text();
+    let data = null; try { data = text ? JSON.parse(text) : null; } catch (e) {}
+    if (!res.ok) throw new Error((data && data.message) || ('HTTP ' + res.status));
+    return data;
+  }
+
+  async function resolveContent() {
+    let c = defaults();
+    try { const r = await fetch('content.json', { cache: 'no-store' }); if (r && r.ok) c = merge(c, await r.json()); } catch (e) {}
+    const local = loadLocal(); if (local) c = merge(c, local);
+    return c;
+  }
+
+  function photoFallback(box, img) {
+    box.classList.add('missing');
+    if (img && img.parentElement) img.remove();
+    const lbl = document.createElement('div'); lbl.className = 'missing-label';
+    lbl.textContent = box.getAttribute('data-title') || '';
+    const s = document.createElement('small'); s.textContent = (box.getAttribute('data-unit') || '') + ' — add your photo here';
+    lbl.appendChild(s); box.appendChild(lbl); box.style.cursor = 'default';
+  }
+
+  function renderTimeline(c, revealed, previewMap) {
+    const host = $('#timeline-inner'); if (!host) return;
+    host.innerHTML = '';
+    c.moments.forEach(function (m, i) {
+      const alt = (i % 2 === 1);
+      const art = document.createElement('article');
+      art.className = 'moment reveal ' + (alt ? 'alt from-right' : 'from-left') + (revealed ? ' visible' : '');
+      const photo = document.createElement('div'); photo.className = 'moment-photo';
+      photo.setAttribute('data-title', m.title || ''); photo.setAttribute('data-unit', 'Moment ' + (i + 1));
+      const img = document.createElement('img');
+      img.src = (previewMap && previewMap[i]) || m.photo || ('photos/moment' + (i + 1) + '.jpg');
+      img.alt = m.title || ('Moment ' + (i + 1)); img.loading = 'lazy';
+      img.addEventListener('error', function () { photoFallback(photo, img); });
+      photo.appendChild(img);
+      const text = document.createElement('div'); text.className = 'moment-text';
+      const dt = document.createElement('p'); dt.className = 'moment-date'; dt.textContent = m.date || '';
+      const ti = document.createElement('h3'); ti.className = 'moment-title'; ti.textContent = m.title || '';
+      const cap = document.createElement('p'); cap.className = 'moment-caption'; cap.textContent = m.caption || '';
+      text.appendChild(dt); text.appendChild(ti); text.appendChild(cap);
+      art.appendChild(photo); art.appendChild(text);
+      host.appendChild(art);
+    });
+    setupLightbox();
+  }
+
+  /* ── Reveal observer ── */
+  let revealObserver = null;
+  function setupReveal() {
+    const items = $$('.reveal:not(.visible)');
+    if (!('IntersectionObserver' in window) || REDUCED) { items.forEach(function (el) { el.classList.add('visible'); }); return; }
+    if (!revealObserver) revealObserver = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } }); }, { threshold: 0.15 });
+    items.forEach(function (el) { revealObserver.observe(el); });
+  }
+
+  /* ── Lightbox ── */
+  let lbBound = false, lbState = { imgs: [], idx: 0, lastFocus: null };
+  function setupLightbox() {
+    const lb = $('#lightbox'); if (!lb) return;
+    lbState.imgs = $$('.moment-photo img');
+    if (lbBound) return; lbBound = true;
+    const lbImg = $('#lb-img');
+    function show(i) { const imgs = lbState.imgs; if (!imgs.length) return; lbState.idx = (i + imgs.length) % imgs.length; lbImg.src = imgs[lbState.idx].src; lbImg.alt = imgs[lbState.idx].alt || ''; }
+    function open(i) { lbState.lastFocus = document.activeElement; show(i); lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); $('#lb-close').focus(); }
+    function close() { lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); if (lbState.lastFocus && lbState.lastFocus.focus) lbState.lastFocus.focus(); }
+    $('#timeline-inner').addEventListener('click', function (e) {
+      const img = e.target.closest && e.target.closest('.moment-photo img'); if (!img) return;
+      const idx = lbState.imgs.indexOf(img); if (idx >= 0 && img.isConnected) open(idx);
+    });
+    $('#lb-close').addEventListener('click', close);
+    $('#lb-prev').addEventListener('click', function () { show(lbState.idx - 1); });
+    $('#lb-next').addEventListener('click', function () { show(lbState.idx + 1); });
+    lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+    document.addEventListener('keydown', function (e) { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') close(); else if (e.key === 'ArrowLeft') show(lbState.idx - 1); else if (e.key === 'ArrowRight') show(lbState.idx + 1); });
+  }
+
+  /* ── Letter ── */
+  let letterTyped = false;
+  function setLetterStatic(c) { $('#letter-text').textContent = c.letter || ''; $('#cursor').hidden = true; const sign = $('#letter-sign'); sign.textContent = c.signature || ''; sign.classList.add('show'); letterTyped = true; }
+  function setupLetter(c) {
+    const out = $('#letter-text'), cursor = $('#cursor'), sign = $('#letter-sign');
+    sign.textContent = c.signature || '';
+    const text = (c.letter || '').replace(/\r/g, '');
+    const host = $('#letter');
+    function finish() { cursor.hidden = true; sign.classList.add('show'); }
+    function run() { if (letterTyped) return; letterTyped = true; if (REDUCED) { out.textContent = text; finish(); return; } cursor.hidden = false; let i = 0; (function type() { if (i < text.length) { out.textContent += text.charAt(i++); setTimeout(type, 38); } else finish(); })(); }
+    if (!('IntersectionObserver' in window)) { run(); return; }
+    const io = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) { run(); io.disconnect(); } }); }, { threshold: 0.35 });
+    io.observe(host);
+  }
+
+  /* ── Finale ── */
+  (function finale() {
+    const host = $('#finale');
+    if (host && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) { burst(); io.disconnect(); } }); }, { threshold: 0.4 });
+      io.observe(host);
+    }
+    const replay = $('#replay');
+    if (replay) replay.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' }); });
+  })();
+
+  /* ════════════════  ADMIN EDITOR  ════════════════ */
+  // Read the ORIGINAL file bytes (untouched, full quality) as base64 for committing.
+  function readFileBase64(file) {
+    return new Promise(function (resolve, reject) {
+      const fr = new FileReader();
+      fr.onerror = reject;
+      fr.onload = function () { resolve(String(fr.result).split(',')[1] || ''); };
+      fr.readAsDataURL(file);
+    });
+  }
+  function toast(msg) { const t = $('#admin-toast'); if (!t) return; t.textContent = msg; t.classList.add('show'); setTimeout(function () { t.classList.remove('show'); }, 2200); }
+
+  function setupAdmin() {
+    const gate = $('#admin-gate'), panel = $('#admin-panel'), body = $('#admin-body');
+    let DRAFT = null;
+    let pendingFiles = {};   // i -> {base64, path, size}  (new photo originals to commit)
+    let previewUrls = {};    // i -> object URL for in-session preview
+    let pendingAudio = null;  // {base64, path, size} new song to commit
+    let audioPreviewUrl = null;
+    function clearPending() {
+      Object.keys(previewUrls).forEach(function (k) { try { URL.revokeObjectURL(previewUrls[k]); } catch (e) {} });
+      if (audioPreviewUrl) { try { URL.revokeObjectURL(audioPreviewUrl); } catch (e) {} }
+      pendingFiles = {}; previewUrls = {}; pendingAudio = null; audioPreviewUrl = null;
+    }
+
+    function openGate() { $('#admin-err').hidden = true; gate.hidden = false; setTimeout(function () { $('#admin-code').focus(); }, 50); }
+    function closeGate() { gate.hidden = true; $('#admin-code').value = ''; }
+    function tryEnter() {
+      const code = $('#admin-code').value || '';
+      if (cyrb53(code) === CONFIG.adminCodeHash) { try { sessionStorage.setItem('anniv_admin', '1'); } catch (e) {} closeGate(); openPanel(); }
+      else { $('#admin-err').hidden = false; }
+    }
+    function isAuthed() { try { return sessionStorage.getItem('anniv_admin') === '1'; } catch (e) { return false; } }
+
+    function buildForm() {
+      DRAFT = clone(CONTENT);
+      clearPending();
+      body.innerHTML = '';
+      DRAFT.moments.forEach(function (m, i) {
+        const sec = document.createElement('section'); sec.className = 'admin-moment'; sec.dataset.i = i;
+        sec.innerHTML =
+          '<h4>Moment ' + (i + 1) + '</h4>' +
+          '<div class="admin-photo"><img class="admin-thumb" alt=""><label class="admin-upload">Change photo<input type="file" accept="image/*"></label></div>' +
+          '<label>Date</label><input type="text" class="am-date">' +
+          '<label>Title</label><input type="text" class="am-title">' +
+          '<label>Story / message</label><textarea class="am-caption" rows="4"></textarea>';
+        body.appendChild(sec);
+        $('.admin-thumb', sec).src = m.photo || ('photos/moment' + (i + 1) + '.jpg');
+        $('.am-date', sec).value = m.date || '';
+        $('.am-title', sec).value = m.title || '';
+        $('.am-caption', sec).value = m.caption || '';
+        $('.admin-upload input', sec).addEventListener('change', function (e) {
+          const f = e.target.files && e.target.files[0]; if (!f) return;
+          let ext = (f.name.split('.').pop() || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (['jpg', 'jpeg', 'png', 'webp', 'gif'].indexOf(ext) < 0) ext = 'jpg';
+          const path = 'photos/moment' + (i + 1) + '.' + ext;
+          readFileBase64(f).then(function (b64) {
+            pendingFiles[i] = { base64: b64, path: path, size: f.size };
+            DRAFT.moments[i].photo = path;                 // content.json keeps a path, not the image
+            if (previewUrls[i]) { try { URL.revokeObjectURL(previewUrls[i]); } catch (e) {} }
+            previewUrls[i] = URL.createObjectURL(f);
+            const th = $('.admin-thumb', sec);
+            th.onerror = function () { toast('Cannot preview this format — JPG/PNG works best'); };
+            th.src = previewUrls[i];
+            toast('Original ready (' + Math.round(f.size / 1024) + ' KB) — Publish to upload');
+          }).catch(function () { toast('Could not read that file'); });
+        });
+      });
+      const lt = document.createElement('section'); lt.className = 'admin-letter';
+      lt.innerHTML = '<label>Letter</label><textarea id="admin-letter-text" rows="11"></textarea><label>Signature</label><input type="text" id="admin-sign">';
+      body.appendChild(lt);
+      $('#admin-letter-text').value = DRAFT.letter || '';
+      $('#admin-sign').value = DRAFT.signature || '';
+
+      if (!DRAFT.music) DRAFT.music = { title: 'Your Song', artist: 'The Artist', file: 'audio/song.mp3' };
+      const mus = document.createElement('section'); mus.className = 'admin-letter';
+      mus.innerHTML =
+        '<h4 style="color:var(--gold);font-family:var(--serif);font-size:15px;letter-spacing:1px;text-transform:uppercase;margin:4px 0 10px">Music (plays when she opens it)</h4>' +
+        '<label>Song title</label><input type="text" id="am-song-title">' +
+        '<label>Artist</label><input type="text" id="am-song-artist">' +
+        '<label>Song file</label><label class="admin-upload" style="display:block">Choose / change song<input type="file" accept="audio/*,.mp3,.m4a"></label>' +
+        '<p class="admin-note" id="am-song-name" style="padding:8px 0 0"></p>';
+      body.appendChild(mus);
+      $('#am-song-title').value = DRAFT.music.title || '';
+      $('#am-song-artist').value = DRAFT.music.artist || '';
+      const songName = function () { $('#am-song-name').textContent = 'Current: ' + (DRAFT.music.file || 'audio/song.mp3') + (pendingAudio ? '  (new — Publish to upload)' : ''); };
+      songName();
+      $('.admin-upload input', mus).addEventListener('change', function (e) {
+        const f = e.target.files && e.target.files[0]; if (!f) return;
+        let ext = (f.name.split('.').pop() || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (['mp3', 'm4a', 'aac', 'ogg', 'wav'].indexOf(ext) < 0) ext = 'mp3';
+        readFileBase64(f).then(function (b64) {
+          pendingAudio = { base64: b64, path: 'audio/song.' + ext, size: f.size };
+          DRAFT.music.file = pendingAudio.path;
+          if (audioPreviewUrl) { try { URL.revokeObjectURL(audioPreviewUrl); } catch (e) {} }
+          audioPreviewUrl = URL.createObjectURL(f);
+          if (musicAPI) musicAPI.setSong(audioPreviewUrl, $('#am-song-title').value, $('#am-song-artist').value, true); // play preview now
+          songName();
+          toast('Song ready (' + Math.round(f.size / 1024) + ' KB) — Publish to upload');
+        }).catch(function () { toast('Could not read that audio file'); });
+      });
+
+      const gh = document.createElement('section'); gh.className = 'admin-letter';
+      gh.innerHTML =
+        '<h4 style="color:var(--gold);font-family:var(--serif);font-size:15px;letter-spacing:1px;text-transform:uppercase;margin:4px 0 10px">Publish to GitHub</h4>' +
+        '<label>GitHub username</label><input type="text" id="gh-owner" autocomplete="off">' +
+        '<label>Repo name</label><input type="text" id="gh-repo" autocomplete="off">' +
+        '<label>Branch</label><input type="text" id="gh-branch" autocomplete="off">' +
+        '<label>Access token (saved only on this device)</label><input type="password" id="gh-token" autocomplete="off">' +
+        '<div style="display:flex;gap:8px;margin-top:10px"><button type="button" id="gh-save">Save settings</button><button type="button" id="gh-forget" class="danger">Forget token</button></div>' +
+        '<p class="admin-note" style="padding:10px 0 0">Use a <b>fine-grained token</b> limited to this one repo (Repository permissions &rarr; Contents: Read &amp; write). It is stored only in this browser, never in the site. Publishing commits your text plus any new <b>full-quality photos</b> (as <code>photos/moment#</code> files) in one commit. Revoke the token if you lose the device.</p>';
+      body.appendChild(gh);
+      const ghCfg = loadGH();
+      $('#gh-owner').value = ghCfg.owner || '';
+      $('#gh-repo').value = ghCfg.repo || 'anniversary';
+      $('#gh-branch').value = ghCfg.branch || 'main';
+      $('#gh-token').value = ghCfg.token || '';
+      $('#gh-save').addEventListener('click', function () {
+        saveGH({ owner: $('#gh-owner').value.trim(), repo: $('#gh-repo').value.trim() || 'anniversary', branch: $('#gh-branch').value.trim() || 'main', token: $('#gh-token').value.trim() });
+        toast('GitHub settings saved');
+      });
+      $('#gh-forget').addEventListener('click', function () { $('#gh-token').value = ''; const c = loadGH(); c.token = ''; saveGH(c); toast('Token forgotten'); });
+    }
+    function readForm() {
+      $$('.admin-moment').forEach(function (sec) {
+        const i = +sec.dataset.i;
+        DRAFT.moments[i].date = $('.am-date', sec).value;
+        DRAFT.moments[i].title = $('.am-title', sec).value;
+        DRAFT.moments[i].caption = $('.am-caption', sec).value;
+      });
+      DRAFT.letter = $('#admin-letter-text').value;
+      DRAFT.signature = $('#admin-sign').value;
+      if (!DRAFT.music) DRAFT.music = {};
+      if ($('#am-song-title')) DRAFT.music.title = $('#am-song-title').value;
+      if ($('#am-song-artist')) DRAFT.music.artist = $('#am-song-artist').value;
+    }
+    async function publishToGitHub() {
+      const owner = $('#gh-owner') ? $('#gh-owner').value.trim() : '';
+      const repo = ($('#gh-repo') ? $('#gh-repo').value.trim() : '') || 'anniversary';
+      const branch = ($('#gh-branch') ? $('#gh-branch').value.trim() : '') || 'main';
+      const token = $('#gh-token') ? $('#gh-token').value.trim() : '';
+      if (!owner || !token) { toast('Add your GitHub username + token below'); if ($('#gh-owner')) $('#gh-owner').scrollIntoView({ block: 'center' }); return; }
+      saveGH({ owner: owner, repo: repo, branch: branch, token: token });
+      readForm();
+      const json = JSON.stringify({ moments: DRAFT.moments, letter: DRAFT.letter, signature: DRAFT.signature, music: DRAFT.music }, null, 2);
+      const b64 = utf8ToB64(json);
+      const H = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' };
+      const btn = $('#admin-publish'); const old = btn.textContent; btn.disabled = true; btn.textContent = 'Publishing…';
+      try {
+        const base = '/repos/' + owner + '/' + repo;
+        const ref = await ghApi(base + '/git/ref/heads/' + encodeURIComponent(branch), { headers: H });
+        const baseSha = ref.object.sha;
+        const baseCommit = await ghApi(base + '/git/commits/' + baseSha, { headers: H });
+        const treeItems = [];
+        const contentBlob = await ghApi(base + '/git/blobs', { method: 'POST', headers: H, body: JSON.stringify({ content: b64, encoding: 'base64' }) });
+        treeItems.push({ path: 'content.json', mode: '100644', type: 'blob', sha: contentBlob.sha });
+        const idxs = Object.keys(pendingFiles);
+        for (let k = 0; k < idxs.length; k++) {
+          const pf = pendingFiles[idxs[k]];
+          btn.textContent = 'Photo ' + (k + 1) + '/' + idxs.length + '…';
+          const pb = await ghApi(base + '/git/blobs', { method: 'POST', headers: H, body: JSON.stringify({ content: pf.base64, encoding: 'base64' }) });
+          treeItems.push({ path: pf.path, mode: '100644', type: 'blob', sha: pb.sha });
+        }
+        if (pendingAudio) {
+          btn.textContent = 'Uploading song…';
+          const ab = await ghApi(base + '/git/blobs', { method: 'POST', headers: H, body: JSON.stringify({ content: pendingAudio.base64, encoding: 'base64' }) });
+          treeItems.push({ path: pendingAudio.path, mode: '100644', type: 'blob', sha: ab.sha });
+        }
+        const tree = await ghApi(base + '/git/trees', { method: 'POST', headers: H, body: JSON.stringify({ base_tree: baseCommit.tree.sha, tree: treeItems }) });
+        const extra = (idxs.length ? ' +' + idxs.length + ' photo' + (idxs.length > 1 ? 's' : '') : '') + (pendingAudio ? ' +song' : '');
+        const commit = await ghApi(base + '/git/commits', { method: 'POST', headers: H, body: JSON.stringify({ message: 'Update via editor' + extra, tree: tree.sha, parents: [baseSha] }) });
+        await ghApi(base + '/git/refs/heads/' + encodeURIComponent(branch), { method: 'PATCH', headers: H, body: JSON.stringify({ sha: commit.sha }) });
+        CONTENT = clone(DRAFT); saveLocal(CONTENT);
+        const map = previewUrls; pendingFiles = {}; pendingAudio = null;   // committed now; keep previews this session
+        renderTimeline(CONTENT, true, map); setLetterStatic(CONTENT);
+        toast('Published! Live in ~1 min ✓');
+      } catch (e) {
+        toast('Publish failed: ' + e.message);
+      } finally {
+        btn.disabled = false; btn.textContent = old;
+      }
+    }
+    function openPanel() { buildForm(); panel.hidden = false; requestAnimationFrame(function () { panel.classList.add('open'); }); }
+    function closePanel() { panel.classList.remove('open'); setTimeout(function () { panel.hidden = true; }, 350); }
+
+    $('#admin-enter').addEventListener('click', tryEnter);
+    $('#admin-code').addEventListener('keydown', function (e) { if (e.key === 'Enter') tryEnter(); });
+    $('#admin-cancel').addEventListener('click', function () { closeGate(); if (location.hash === '#edit') history.replaceState(null, '', location.pathname + location.search); });
+    $('#admin-close').addEventListener('click', closePanel);
+    $('#admin-publish').addEventListener('click', publishToGitHub);
+    $('#admin-save').addEventListener('click', function () {
+      readForm(); CONTENT = clone(DRAFT);
+      const ok = saveLocal(CONTENT);
+      renderTimeline(CONTENT, true, previewUrls); setLetterStatic(CONTENT);
+      if (musicAPI) musicAPI.setSong(audioPreviewUrl || (CONTENT.music && CONTENT.music.file) || 'audio/song.mp3', CONTENT.music && CONTENT.music.title, CONTENT.music && CONTENT.music.artist, false);
+      const pend = Object.keys(pendingFiles).length + (pendingAudio ? 1 : 0);
+      toast(ok ? ('Previewing!' + (pend ? ' Publish to upload ' + pend + ' file' + (pend > 1 ? 's' : '') : '')) : 'Previewing (could not save on device)');
+    });
+    $('#admin-export').addEventListener('click', function () {
+      readForm();
+      const data = { moments: DRAFT.moments, letter: DRAFT.letter, signature: DRAFT.signature, music: DRAFT.music };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'content.json'; document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      // also download any newly uploaded photos / song so you can commit them
+      const dls = Object.keys(pendingFiles).map(function (k) { return pendingFiles[k]; });
+      if (pendingAudio) dls.push(pendingAudio);
+      dls.forEach(function (pf, n) {
+        setTimeout(function () {
+          const a2 = document.createElement('a'); a2.href = 'data:application/octet-stream;base64,' + pf.base64; a2.download = pf.path.split('/').pop(); document.body.appendChild(a2); a2.click(); a2.remove();
+        }, 400 * (n + 1));
+      });
+      toast(dls.length ? ('Downloaded content.json + ' + dls.length + ' file' + (dls.length > 1 ? 's' : '') + ' (keep their folders)') : 'Downloaded content.json');
+    });
+    $('#admin-reset').addEventListener('click', function () {
+      if (!window.confirm('Reset all local edits back to default?')) return;
+      try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+      clearPending();
+      resolveContent().then(function (c) { CONTENT = c; renderTimeline(CONTENT, true); setLetterStatic(CONTENT); buildForm(); toast('Reset to default'); });
+    });
+
+    function enterAdmin() { if (isAuthed()) openPanel(); else openGate(); }
+    function maybeOpen() { if (location.hash === '#edit' || location.hash === '#admin') enterAdmin(); }
+    window.addEventListener('hashchange', maybeOpen);
+    maybeOpen();
+    const dot = $('#admin-dot'); if (dot) dot.addEventListener('click', enterAdmin);
+  }
+
+  /* ════════════════  INIT  ════════════════ */
+  (async function init() {
+    CONTENT = await resolveContent();
+    renderTimeline(CONTENT, false);
+    setupReveal();
+    setupLetter(CONTENT);
+    applyMusic(CONTENT, true);   // set the song + try to autoplay (falls back to first gesture)
+    setupAdmin();
+  })();
+
+})();
+</script>
+</body>
+</html>

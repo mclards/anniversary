@@ -1,0 +1,9 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+
+# local verification scratch (never commit)
+_*.html
+_*.js
+assets/_*.png
