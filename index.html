@@ -55,6 +55,8 @@ img{ max-width:100%; height:auto; display:block; }
 :focus-visible{ outline:2px solid var(--blush); outline-offset:3px; border-radius:4px; }
 [hidden]{ display:none !important; }   /* ensure hidden attr beats component display rules */
 .section{ position:relative; }
+/* subtle hairline seam at the top of major sections, for depth between bands */
+.counter::before, .timeline::before, .finale::before{ content:""; position:absolute; top:0; left:50%; transform:translateX(-50%); width:min(440px,72%); height:1px; pointer-events:none; z-index:1; background:linear-gradient(90deg, transparent, rgba(201,150,58,.26), transparent); }
 
 .scroll-progress{
   position:fixed; top:0; left:0; height:3px; width:0;
@@ -71,13 +73,22 @@ img{ max-width:100%; height:auto; display:block; }
 }
 .particles{ position:absolute; inset:0; pointer-events:none; z-index:0; }
 .particle{ position:absolute; bottom:-10px; width:3px; height:3px; border-radius:50%; background:#fff; animation:drift linear infinite; }
-@keyframes drift{ from{ transform:translateY(0);} to{ transform:translateY(-110vh);} }
+/* a few drifting hearts among the sparkles (text glyph, tinted — not emoji) */
+.heart-particle{ width:auto; height:auto; background:none; border-radius:0; line-height:1; text-shadow:0 0 10px currentColor; }
+@keyframes drift{ from{ transform:translateY(0);} to{ transform:translateY(-112vh);} }
 .hero-inner{ position:relative; z-index:1; width:100%; max-width:900px; }
 .hero-title{
+  position:relative;
   font-family:var(--serif); font-weight:700; font-size:clamp(2.45rem, 8vw, 64px);
   line-height:1.08; color:var(--blush); margin:0 0 24px; letter-spacing:.8px;
-  text-shadow:0 4px 40px rgba(232,160,176,.18); text-wrap:balance;
+  text-shadow:0 4px 40px rgba(232,160,176,.22); text-wrap:balance;
 }
+/* soft pulsing aura behind the title — pure opacity/transform, GPU-cheap on iOS */
+.hero-title::before{ content:""; position:absolute; left:50%; top:50%; z-index:-1; width:135%; height:230%;
+  transform:translate(-50%,-50%); pointer-events:none;
+  background:radial-gradient(ellipse at center, rgba(232,160,176,.18), transparent 62%);
+  animation:auraPulse 6.5s ease-in-out infinite; }
+@keyframes auraPulse{ 0%,100%{ opacity:.55; transform:translate(-50%,-50%) scale(1);} 50%{ opacity:1; transform:translate(-50%,-50%) scale(1.07);} }
 .hero-sub{ font-family:var(--sans); font-style:italic; font-weight:300; font-size:clamp(1rem, 4.4vw, 20px); color:var(--muted); margin:0; letter-spacing:.3px; text-wrap:pretty; }
 /* shared gold ornament: a line — heart — line, used across sections for cohesion */
 .ornament{ display:flex; align-items:center; justify-content:center; gap:13px; color:var(--gold); font-size:13px; line-height:1; }
@@ -116,6 +127,9 @@ img{ max-width:100%; height:auto; display:block; }
 .timeline-inner{ max-width:1100px; margin:0 auto; display:flex; flex-direction:column; gap:42px; counter-reset:moment; }
 .moment{ position:relative; counter-increment:moment; display:grid; grid-template-columns:1fr 1fr; align-items:stretch; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:box-shadow .4s ease, transform .4s ease, border-color .4s ease; }
 .moment:hover{ box-shadow:0 18px 46px rgba(0,0,0,.42); transform:translateY(-3px); border-color:rgba(201,150,58,.32); }
+.moment::before{ content:""; position:absolute; top:0; left:0; right:0; height:2px; z-index:3; opacity:0; transition:opacity .4s ease; pointer-events:none;
+  background:linear-gradient(90deg, transparent, rgba(201,150,58,.6), transparent); }
+.moment:hover::before{ opacity:1; }
 .moment-photo{ position:relative; min-height:360px; background:var(--bg-mid); cursor:pointer; overflow:hidden; }
 .moment-photo img{ width:100%; height:100%; min-height:360px; object-fit:cover; transition:transform .4s ease, box-shadow .4s ease; }
 .moment-photo:hover img{ transform:scale(1.03); box-shadow:0 0 24px rgba(200,150,160,.25); }
@@ -139,7 +153,7 @@ img{ max-width:100%; height:auto; display:block; }
 .moment-photo.collage .mphoto.missing::before{ content:"❤"; font-size:34px; color:rgba(232,160,176,.22); }
 .moment-text{ position:relative; padding:36px 38px; display:flex; flex-direction:column; justify-content:center; }
 .moment-text::after{ content:counter(moment,decimal-leading-zero); position:absolute; top:14px; right:18px; font-family:var(--serif); font-weight:700; font-size:42px; line-height:1; color:rgba(201,150,58,.10); pointer-events:none; }
-.moment-date{ font-family:var(--sans); font-weight:400; font-size:12px; text-transform:uppercase; letter-spacing:2px; color:var(--gold); margin:0 0 12px; }
+.moment-date{ align-self:flex-start; font-family:var(--sans); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--gold); margin:0 0 14px; padding:5px 13px; border-radius:30px; background:rgba(201,150,58,.10); border:1px solid rgba(201,150,58,.28); }
 .moment-title{ font-family:var(--serif); font-weight:700; font-size:28px; color:var(--text); margin:0 0 14px; line-height:1.2; letter-spacing:.3px; text-wrap:balance; }
 .moment-caption{ font-family:var(--sans); font-weight:300; font-size:16px; color:var(--muted); }
 .moment-para{ margin:0 0 .9em; line-height:1.7; text-align:justify; text-justify:inter-word; hyphens:auto; -webkit-hyphens:auto; text-wrap:pretty; }
@@ -148,7 +162,7 @@ img{ max-width:100%; height:auto; display:block; }
 .moment.alt .moment-photo{ order:2; } .moment.alt .moment-text{ order:1; }
 
 /* ════ LETTER — a full-screen, spotlit, sealed handwritten letter (a "stop & read me" moment) ════ */
-.letter{ position:relative; min-height:100svh; display:flex; align-items:center; justify-content:center;
+.letter{ position:relative; min-height:100vh; min-height:100svh; display:flex; align-items:center; justify-content:center;
   padding:88px 24px; overflow:hidden;
   background:
     radial-gradient(125% 80% at 50% 26%, rgba(139,26,74,.24), transparent 60%),
@@ -183,8 +197,8 @@ img{ max-width:100%; height:auto; display:block; }
 .letter-sign.show{ opacity:1; transform:none; }
 
 /* ════ FINALE ════ */
-.finale{ min-height:100vh; min-height:100svh; display:flex; align-items:center; justify-content:center; text-align:center; padding:48px 24px; background:var(--bg-mid); }
-.finale-inner{ position:relative; z-index:1; text-shadow:0 8px 32px rgba(0,0,0,.3); }
+.finale{ min-height:100vh; min-height:100svh; display:grid; grid-template-columns:minmax(0,1fr); align-items:center; justify-items:center; text-align:center; padding:48px 24px; background:var(--bg-mid); }
+.finale-inner{ position:relative; z-index:1; width:100%; max-width:660px; margin:0 auto; text-shadow:0 8px 32px rgba(0,0,0,.3); }
 .finale-main{ font-family:var(--serif); font-weight:700; line-height:1.08; letter-spacing:1px; font-size:clamp(2.6rem,10vw,64px); margin:0; text-wrap:balance; }
 .finale-main .blush{ display:block; color:var(--blush); text-shadow:0 0 38px rgba(232,160,176,.22); }
 .finale-main .gold{ display:block; color:var(--gold); text-shadow:0 0 38px rgba(201,150,58,.22); }
@@ -215,10 +229,12 @@ img{ max-width:100%; height:auto; display:block; }
 .lightbox img{ max-width:90vw; max-height:86vh; border-radius:10px; box-shadow:0 18px 50px rgba(0,0,0,.6); }
 .lightbox.open img{ animation:lbin .35s ease; }
 @keyframes lbin{ from{ opacity:0; transform:scale(.94);} to{ opacity:1; transform:scale(1);} }
-.lightbox-cap{ position:absolute; left:0; right:0; bottom:calc(18px + env(safe-area-inset-bottom)); margin:0; text-align:center; color:var(--muted); font-size:13px; letter-spacing:.5px; padding:0 64px; pointer-events:none; }
-.lightbox-cap b{ color:var(--text); font-weight:400; }
-.lightbox-btn{ position:absolute; background:rgba(31,24,48,.7); border:1px solid var(--border); color:var(--text); width:46px; height:46px; border-radius:50%; cursor:pointer; font-size:24px; line-height:1; display:flex; align-items:center; justify-content:center; transition:background .25s ease; }
+.lightbox-cap{ position:absolute; left:50%; transform:translateX(-50%); bottom:calc(20px + env(safe-area-inset-bottom)); margin:0; text-align:center; color:var(--muted); font-size:13px; letter-spacing:.5px; padding:7px 18px; pointer-events:none; max-width:min(90vw,520px);
+  background:rgba(13,11,26,.5); border:1px solid rgba(255,255,255,.08); border-radius:30px; -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px); }
+.lightbox-cap b{ color:var(--text); font-weight:600; }
+.lightbox-btn{ position:absolute; background:rgba(31,24,48,.6); border:1px solid rgba(255,255,255,.12); color:var(--text); width:48px; height:48px; border-radius:50%; cursor:pointer; font-size:24px; line-height:1; display:flex; align-items:center; justify-content:center; -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px); transition:background .25s ease, transform .2s ease; }
 .lightbox-btn:hover{ background:var(--accent); }
+.lightbox-btn:active{ transform:scale(.92); }
 .lightbox-close{ top:calc(20px + env(safe-area-inset-top)); right:calc(20px + env(safe-area-inset-right)); }
 .lightbox-nav{ top:50%; transform:translateY(-50%); }
 .lightbox-nav.prev{ left:calc(16px + env(safe-area-inset-left)); }
@@ -339,6 +355,9 @@ img{ max-width:100%; height:auto; display:block; }
   .letter-card::after{ inset:10px; }
   .letter-body{ font-size:clamp(1.32rem,6.6vw,1.6rem); line-height:1.58; }
   .letter-seal{ width:54px; height:54px; font-size:24px; top:-27px; }
+  .finale{ padding-left:24px; padding-right:24px; }
+  .finale-main{ font-size:clamp(1.95rem,8.6vw,2.6rem); letter-spacing:.5px; }
+  .finale-sub{ font-size:16px; }
 }
 
 /* ════ LOADER (preloads songs + photos so nothing stalls) — fully opaque so main content never bleeds through ════ */
@@ -359,7 +378,7 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
 /* ════ REDUCED MOTION ════ */
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
-  .particle, .chevron, .heart, .cursor, .music-toggle.playing, .letter-seal{ animation:none !important; }
+  .particle, .chevron, .heart, .cursor, .music-toggle.playing, .letter-seal, .hero-title::before{ animation:none !important; }
   .cnum.beat, .lightbox.open img, .loader-heart, .loader-inner{ animation:none !important; }
   .moment{ transition:none !important; }
   .fade{ opacity:1 !important; animation:none; }
@@ -556,9 +575,11 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
   /* ── Particles ── */
   (function particles() {
     const wrap = $('#particles'); if (!wrap) return;
-    const count = REDUCED ? 10 : 26;
+    // Keep counts modest so iOS Safari composites smoothly (transform-only animation).
+    const dots = REDUCED ? 8 : 22;
+    const hearts = REDUCED ? 0 : 7;
     const frag = document.createDocumentFragment();
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < dots; i++) {
       const p = document.createElement('div'); p.className = 'particle';
       const size = 2 + Math.random() * 1.5;
       p.style.width = p.style.height = size.toFixed(1) + 'px';
@@ -567,6 +588,18 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
       p.style.opacity = (0.2 + Math.random() * 0.4).toFixed(2);
       if (!REDUCED) { const dur = 10 + Math.random() * 12; p.style.animationDuration = dur.toFixed(1) + 's'; p.style.animationDelay = '-' + (Math.random() * dur).toFixed(1) + 's'; }
       frag.appendChild(p);
+    }
+    const tints = ['#E8A0B0', '#C9963A', '#E8E0F0'];
+    for (let i = 0; i < hearts; i++) {
+      const h = document.createElement('div'); h.className = 'particle heart-particle';
+      h.textContent = '♥';   // ♥ text glyph (tinted via color), not the emoji
+      h.style.left = (Math.random() * 100).toFixed(2) + '%';
+      h.style.bottom = (Math.random() * 100 - 10).toFixed(2) + '%';
+      h.style.fontSize = (10 + Math.random() * 12).toFixed(0) + 'px';
+      h.style.color = tints[i % tints.length];
+      h.style.opacity = (0.12 + Math.random() * 0.16).toFixed(2);
+      const dur = 14 + Math.random() * 12; h.style.animationDuration = dur.toFixed(1) + 's'; h.style.animationDelay = '-' + (Math.random() * dur).toFixed(1) + 's';
+      frag.appendChild(h);
     }
     wrap.appendChild(frag);
   })();
