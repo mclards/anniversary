@@ -551,7 +551,14 @@ body.loading{ overflow:hidden; }
     function pause(k) { clearFade(k); var el = tracks[k]; if (!el) return; try { el.pause(); } catch (e) {} }
     function setUI() { btn.classList.toggle('playing', enabled); btn.setAttribute('aria-pressed', String(enabled)); btn.setAttribute('aria-label', enabled ? 'Pause music' : 'Play music'); icon.textContent = enabled ? '♪' : '♫'; icon.style.opacity = enabled ? '1' : '.6'; }
     function refreshDisabled() { btn.disabled = !(avail('main') || avail('finale')); } // only useless if BOTH songs are missing
-    function apply() { var act = effective(); Object.keys(tracks).forEach(function (k) { if (!tracks[k]) return; if (enabled && k === act) play(k); else pause(k); }); setUI(); refreshDisabled(); }
+    function apply() {
+      var act = effective();
+      // Pause every NON-active track FIRST, so the outgoing song always stops even if play() of the
+      // incoming one misbehaves. Then play the active one.
+      Object.keys(tracks).forEach(function (k) { if (tracks[k] && !(enabled && k === act)) pause(k); });
+      if (enabled) play(act);
+      setUI(); refreshDisabled();
+    }
     function unlock() {
       if (unlocked) return;
       var act = effective();
@@ -839,9 +846,8 @@ body.loading{ overflow:hidden; }
         through the finale; the main song resumes when she scrolls back up above the letter. ── */
   (function letterMusic() {
     const letterEl = $('#letter'); if (!letterEl) return;
-    let ticking = false, cur = 'main';
+    let cur = 'main', last = 0;
     function pick() {
-      ticking = false;
       const top = letterEl.getBoundingClientRect().top, ih = window.innerHeight || 1;
       // hysteresis (dead-band) so a jiggle at the boundary never thrashes the songs on mobile:
       if (cur !== 'finale' && top < ih * 0.5) cur = 'finale';        // letter is well into view → finale
@@ -849,9 +855,14 @@ body.loading{ overflow:hidden; }
       else return;
       if (musicAPI) musicAPI.setActive(cur);
     }
-    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(pick); } }
+    // Call pick DIRECTLY (not via requestAnimationFrame): iOS pauses rAF during momentum scrolling,
+    // so an rAF-based switch wouldn't fire until scrolling fully stops — the finale would keep playing
+    // while she scrolls back up. A light time-throttle keeps it cheap.
+    function onScroll() { var now = Date.now(); if (now - last < 60) return; last = now; pick(); }
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
+    window.addEventListener('scrollend', pick);                  // re-check once momentum settles (iOS 16+)
+    window.addEventListener('touchend', pick, { passive: true });// and after a finger lift
+    window.addEventListener('resize', pick, { passive: true });
     pick();
   })();
 
