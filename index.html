@@ -79,6 +79,12 @@ img{ max-width:100%; height:auto; display:block; }
   text-shadow:0 4px 40px rgba(232,160,176,.18); text-wrap:balance;
 }
 .hero-sub{ font-family:var(--sans); font-style:italic; font-weight:300; font-size:clamp(1rem, 4.4vw, 20px); color:var(--muted); margin:0; letter-spacing:.3px; text-wrap:pretty; }
+/* shared gold ornament: a line — heart — line, used across sections for cohesion */
+.ornament{ display:flex; align-items:center; justify-content:center; gap:13px; color:var(--gold); font-size:13px; line-height:1; }
+.ornament::before,.ornament::after{ content:""; display:block; width:clamp(32px,12vw,54px); height:1px; }
+.ornament::before{ background:linear-gradient(90deg, transparent, rgba(201,150,58,.85)); }
+.ornament::after{ background:linear-gradient(90deg, rgba(201,150,58,.85), transparent); }
+.hero .ornament{ margin:0 0 24px; }
 .chevron{ position:absolute; bottom:calc(34px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); z-index:1; color:var(--muted); opacity:.85; animation:bounce 1.5s ease-in-out infinite; }
 .chevron svg{ display:block; width:30px; height:30px; }
 @keyframes bounce{ 0%,100%{ transform:translate(-50%,0);} 50%{ transform:translate(-50%,8px);} }
@@ -91,12 +97,13 @@ img{ max-width:100%; height:auto; display:block; }
 .counter-label-top{ font-family:var(--sans); font-weight:400; font-size:14px; text-transform:uppercase; letter-spacing:3px; color:var(--muted); margin:0 0 38px; }
 .counter-grid{ display:flex; flex-wrap:nowrap; justify-content:center; align-items:flex-start; gap:clamp(6px,3vw,26px); max-width:900px; margin:0 auto; }
 .cblock{ display:flex; flex-direction:column; align-items:center; min-width:0; }
-.cnum{ font-family:var(--serif); font-weight:700; font-size:clamp(2.2rem,11vw,72px); line-height:1; color:var(--blush); font-variant-numeric:tabular-nums; letter-spacing:1px; }
-@keyframes cbeat{ 0%{ text-shadow:0 0 0 rgba(232,160,176,0);} 35%{ text-shadow:0 0 16px rgba(232,160,176,.5);} 100%{ text-shadow:0 0 0 rgba(232,160,176,0);} }
+.cnum{ font-family:var(--serif); font-weight:700; font-size:clamp(2.2rem,11vw,72px); line-height:1; color:var(--blush); font-variant-numeric:tabular-nums; letter-spacing:1px; text-shadow:0 0 26px rgba(232,160,176,.14); }
+@keyframes cbeat{ 0%{ text-shadow:0 0 0 rgba(232,160,176,0);} 35%{ text-shadow:0 0 18px rgba(232,160,176,.55);} 100%{ text-shadow:0 0 26px rgba(232,160,176,.14);} }
 .cnum.beat{ animation:cbeat .85s ease; }
 .cunit{ font-family:var(--sans); font-weight:400; font-size:13px; text-transform:uppercase; letter-spacing:2px; color:var(--gold); margin-top:12px; }
-.csep{ font-family:var(--serif); font-weight:700; font-size:clamp(2rem,9vw,60px); line-height:1; color:var(--border); padding-top:2px; }
-.counter-label-bot{ font-family:var(--sans); font-style:italic; font-weight:300; font-size:18px; color:var(--muted); margin:40px 0 0; }
+.csep{ font-family:var(--serif); font-weight:700; font-size:clamp(2rem,9vw,60px); line-height:1; color:rgba(201,150,58,.38); padding-top:2px; }
+.counter .ornament{ margin:36px 0 0; }
+.counter-label-bot{ font-family:var(--sans); font-style:italic; font-weight:300; font-size:18px; color:var(--muted); margin:22px 0 0; }
 
 /* ════ TIMELINE ════ */
 .timeline{ background:var(--bg-deep); padding:80px 24px; }
@@ -107,8 +114,8 @@ img{ max-width:100%; height:auto; display:block; }
 .timeline-hint svg{ width:15px; height:15px; flex:none; stroke:var(--gold); opacity:.85; }
 .timeline-hint b{ color:var(--blush); font-weight:400; font-style:normal; }
 .timeline-inner{ max-width:1100px; margin:0 auto; display:flex; flex-direction:column; gap:42px; counter-reset:moment; }
-.moment{ position:relative; counter-increment:moment; display:grid; grid-template-columns:1fr 1fr; align-items:stretch; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:box-shadow .4s ease, transform .4s ease; }
-.moment:hover{ box-shadow:0 14px 40px rgba(0,0,0,.32); }
+.moment{ position:relative; counter-increment:moment; display:grid; grid-template-columns:1fr 1fr; align-items:stretch; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:box-shadow .4s ease, transform .4s ease, border-color .4s ease; }
+.moment:hover{ box-shadow:0 18px 46px rgba(0,0,0,.42); transform:translateY(-3px); border-color:rgba(201,150,58,.32); }
 .moment-photo{ position:relative; min-height:360px; background:var(--bg-mid); cursor:pointer; overflow:hidden; }
 .moment-photo img{ width:100%; height:100%; min-height:360px; object-fit:cover; transition:transform .4s ease, box-shadow .4s ease; }
 .moment-photo:hover img{ transform:scale(1.03); box-shadow:0 0 24px rgba(200,150,160,.25); }
@@ -179,11 +186,12 @@ img{ max-width:100%; height:auto; display:block; }
 .finale{ min-height:100vh; min-height:100svh; display:flex; align-items:center; justify-content:center; text-align:center; padding:48px 24px; background:var(--bg-mid); }
 .finale-inner{ position:relative; z-index:1; text-shadow:0 8px 32px rgba(0,0,0,.3); }
 .finale-main{ font-family:var(--serif); font-weight:700; line-height:1.08; letter-spacing:1px; font-size:clamp(2.6rem,10vw,64px); margin:0; text-wrap:balance; }
-.finale-main .blush{ display:block; color:var(--blush); }
-.finale-main .gold{ display:block; color:var(--gold); }
-.finale-sub{ font-family:var(--sans); font-style:italic; font-weight:300; font-size:18px; color:var(--muted); margin:26px 0 40px; }
-.replay-btn{ font-family:var(--sans); font-weight:400; font-size:15px; letter-spacing:1px; color:var(--gold); background:transparent; border:1px solid var(--gold); border-radius:40px; padding:13px 30px; cursor:pointer; transition:background .35s ease, color .35s ease, transform .2s ease; }
-.replay-btn:hover{ background:var(--gold); color:var(--bg-deep); }
+.finale-main .blush{ display:block; color:var(--blush); text-shadow:0 0 38px rgba(232,160,176,.22); }
+.finale-main .gold{ display:block; color:var(--gold); text-shadow:0 0 38px rgba(201,150,58,.22); }
+.finale .ornament{ margin:30px 0 0; }
+.finale-sub{ font-family:var(--sans); font-style:italic; font-weight:300; font-size:18px; color:var(--muted); margin:22px 0 40px; text-wrap:pretty; }
+.replay-btn{ font-family:var(--sans); font-weight:400; font-size:15px; letter-spacing:1.2px; color:var(--gold); background:transparent; border:1px solid var(--gold); border-radius:40px; padding:13px 32px; cursor:pointer; transition:background .35s ease, color .35s ease, transform .2s ease, box-shadow .35s ease; }
+.replay-btn:hover{ background:var(--gold); color:var(--bg-deep); box-shadow:0 8px 28px rgba(201,150,58,.4); }
 .replay-btn:active{ transform:scale(.97); }
 
 /* ════ MUSIC ════ */
@@ -198,7 +206,8 @@ img{ max-width:100%; height:auto; display:block; }
 .footer{ background:var(--bg-deep); text-align:center; padding:64px 24px; }
 .heart{ font-size:30px; color:var(--accent); cursor:pointer; line-height:1; margin-bottom:8px; padding:10px 16px; user-select:none; -webkit-touch-callout:none; display:inline-block; animation:pulse 1.2s ease-in-out infinite; }
 @keyframes pulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.2);} }
-.footer-text{ font-family:var(--sans); font-weight:300; font-size:14px; color:var(--footer); margin:0; letter-spacing:.5px; }
+.footer-text{ font-family:var(--sans); font-weight:300; font-size:14px; color:var(--footer); margin:0; letter-spacing:.5px; line-height:1.9; text-wrap:pretty; }
+.foot-sep{ color:var(--accent); margin:0 9px; font-size:10px; vertical-align:middle; }
 
 /* ════ LIGHTBOX ════ */
 .lightbox{ position:fixed; inset:0; z-index:10001; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.92); opacity:0; visibility:hidden; transition:opacity .3s ease, visibility .3s ease; }
@@ -377,7 +386,8 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
   <div class="particles" id="particles" aria-hidden="true"></div>
   <div class="hero-inner">
     <h1 class="hero-title fade fade-1">For you, Baby.</h1>
-    <p class="hero-sub fade fade-2">365 araw. Isang taon. Patungo sa ating habang-buhay.</p>
+    <div class="ornament fade fade-2" aria-hidden="true">❤</div>
+    <p class="hero-sub fade fade-3">365 araw. Isang taon. Patungo sa ating habang-buhay.</p>
   </div>
   <a class="chevron fade fade-3" href="#counter" aria-label="Scroll down">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
@@ -396,6 +406,7 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
     <span class="csep" aria-hidden="true">:</span>
     <div class="cblock"><span class="cnum" id="c-sec">00</span><span class="cunit">Sec</span></div>
   </div>
+  <div class="ornament" aria-hidden="true">❤</div>
   <p class="counter-label-bot">and I'd count every one again.</p>
 </section>
 
@@ -423,6 +434,7 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
 <section class="finale section reveal" id="finale">
   <div class="finale-inner">
     <h2 class="finale-main"><span class="blush">One year down,</span><span class="gold">a lifetime to go.</span></h2>
+    <div class="ornament" aria-hidden="true">❤</div>
     <p class="finale-sub">You are more than enough for me, today and always.</p>
     <button class="replay-btn" id="replay">back to the start ↑</button>
   </div>
@@ -431,7 +443,7 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
 <!-- ════ FOOTER ════ -->
 <footer class="footer section">
   <div class="heart" id="heart" role="button" tabindex="0" aria-label="A heart for you">❤</div>
-  <p class="footer-text">Made with love by Baba &nbsp;•&nbsp; Still choosing you, Baby Jezel &nbsp;•&nbsp; June 2026</p>
+  <p class="footer-text">Made with love by Baba <span class="foot-sep" aria-hidden="true">❤</span> Still choosing you, Baby Jezel <span class="foot-sep" aria-hidden="true">❤</span> June 2026</p>
 </footer>
 
 <!-- ════ MUSIC ════ -->
