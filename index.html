@@ -364,6 +364,7 @@ img{ max-width:100%; height:auto; display:block; }
   <span class="music-icon" id="music-icon" aria-hidden="true">♪</span>
 </button>
 <audio id="audio" src="audio/song.mp3" loop preload="none"></audio>
+<audio id="audio2" src="audio/song2.mp3" loop preload="none"></audio>
 
 <!-- Discreet editor entry (faint corner speck; passcode-gated) -->
 <button class="admin-dot" id="admin-dot" aria-label="Editor"></button>
@@ -422,7 +423,8 @@ img{ max-width:100%; height:auto; display:block; }
   ],
   "letter": "Baby Jezel,\n\nOne year na tayo. Honestly, di ko akalain we'd make it this far — and not because of you, ha. Kasi ang dami nating pinagdaanan. Hindi simple ang umpisa natin, and now this distance makes it harder pa gyud.\n\nYou always say you're not enough — na hindi ka bagay sa akin, na hindi ka raw bagay sa pamilya ko kasi mas mataas ang status nila. Baby, ilang beses na ba kitang kinontra? I never cared about money or status. Ikaw ang pinili ko — hindi yung sahod mo, hindi yung pamilya mo. Ikaw lang. Always.\n\nOo na, minsan sobra akong mag-alala, medyo controlling, laging tanong kung kumain ka na, kung asa ka. Age gap lang 'yan, promise — natatakot lang akong mawala ka. Sorry sa overthinking, sa mga misunderstanding, sa mga gabing walang pamasahe para magkita tayo.\n\nPero kahit malayo, kahit kapos, ikaw pa rin ang pinili ko. And I'll keep choosing you, promise.\n\nI love you, Baby Jezel. For real — hindi lang 'to pang-video call.",
   "signature": "— Baba",
-  "music": { "title": "Your Song", "artist": "The Artist", "file": "audio/song.mp3" }
+  "music": { "title": "Your Song", "artist": "The Artist", "file": "audio/song.mp3" },
+  "music2": { "title": "Finale Song", "artist": "The Artist", "file": "audio/song2.mp3" }
 }
 </script>
 
@@ -495,68 +497,90 @@ img{ max-width:100%; height:auto; display:block; }
     tick(); setInterval(tick, 1000);
   })();
 
-  /* ── Music: editable song + autoplay (load, else first gesture); iOS-safe fade ── */
+  /* ── Music: TWO tracks (main + finale). Button = master on/off; scroll picks which song. ──
+     Reaching the finale crossfades to the 2nd song; scrolling back resumes the main — each keeps
+     its own position. iOS: both elements are "unlocked" inside the first gesture. ── */
   let musicAPI = null;
   function setupMusic() {
-    const btn = $('#music'), icon = $('#music-icon'), audio = $('#audio');
-    if (!btn || !audio) return null;
+    const btn = $('#music'), icon = $('#music-icon');
+    const tracks = { main: $('#audio'), finale: $('#audio2') };
+    if (!btn || !tracks.main) return null;
     const MAX = 0.8, STEP = 0.05, MS = 75;
-    let fadeTimer = null, playing = false, broken = false, canFade = null, armed = false;
-    audio.addEventListener('error', function () { broken = true; btn.disabled = true; if (!btn.title) btn.title = 'No song added yet (audio/song.mp3)'; });
-    function fadeSupported() { if (canFade !== null) return canFade; try { audio.volume = 0; canFade = (audio.volume === 0); } catch (e) { canFade = false; } return canFade; }
-    function clearFade() { if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; } }
-    function fadeTo(target, after) {
-      clearFade();
-      fadeTimer = setInterval(function () {
-        var v = audio.volume;
-        if (Math.abs(v - target) <= STEP) { audio.volume = target; clearFade(); if (after) after(); return; }
-        audio.volume = Math.min(MAX, Math.max(0, v + (target > v ? STEP : -STEP)));
+    let enabled = false, activeKey = 'main', armed = false, unlocked = false;
+    const canFade = {}, timers = {}, broken = {};
+    Object.keys(tracks).forEach(function (k) { var el = tracks[k]; if (el) el.addEventListener('error', function () { broken[k] = true; refreshDisabled(); }); });
+    function supports(k) { var el = tracks[k]; if (k in canFade) return canFade[k]; try { el.volume = 0; canFade[k] = (el.volume === 0); } catch (e) { canFade[k] = false; } return canFade[k]; }
+    function clearFade(k) { if (timers[k]) { clearInterval(timers[k]); timers[k] = null; } }
+    function fadeTo(k, target, after) {
+      var el = tracks[k]; clearFade(k);
+      if (!supports(k)) { try { el.volume = target; } catch (e) {} if (after) after(); return; }
+      timers[k] = setInterval(function () {
+        var v = el.volume;
+        if (Math.abs(v - target) <= STEP) { el.volume = target; clearFade(k); if (after) after(); return; }
+        el.volume = Math.min(MAX, Math.max(0, v + (target > v ? STEP : -STEP)));
       }, MS);
     }
-    function setUI(on) { playing = on; btn.classList.toggle('playing', on); btn.setAttribute('aria-pressed', String(on)); btn.setAttribute('aria-label', on ? 'Pause music' : 'Play music'); icon.textContent = on ? '♪' : '♫'; icon.style.opacity = on ? '1' : '.6'; }
-    function start() {
-      if (broken || playing) return Promise.resolve(false);
-      const supported = fadeSupported();
-      if (supported) audio.volume = 0;
-      const pr = audio.play();
-      if (pr && pr.then) return pr.then(function () { if (supported) fadeTo(MAX); else audio.volume = MAX; setUI(true); return true; }).catch(function () { return false; });
-      if (supported) fadeTo(MAX); else audio.volume = MAX; setUI(true); return Promise.resolve(true);
+    function avail(k) { var el = tracks[k]; return !!(el && !broken[k] && el.getAttribute('src')); }
+    function effective() { return (activeKey === 'finale' && avail('finale')) ? 'finale' : 'main'; } // no finale song -> keep main playing
+    function play(k) { var el = tracks[k]; if (!el || broken[k]) return; if (supports(k)) el.volume = 0; var pr = el.play(); if (pr && pr.catch) pr.catch(function () {}); fadeTo(k, MAX); }
+    function pause(k) { var el = tracks[k]; if (!el) return; fadeTo(k, 0, function () { try { el.pause(); } catch (e) {} }); }
+    function setUI() { btn.classList.toggle('playing', enabled); btn.setAttribute('aria-pressed', String(enabled)); btn.setAttribute('aria-label', enabled ? 'Pause music' : 'Play music'); icon.textContent = enabled ? '♪' : '♫'; icon.style.opacity = enabled ? '1' : '.6'; }
+    function refreshDisabled() { btn.disabled = !(avail('main') || avail('finale')); } // only useless if BOTH songs are missing
+    function apply() { var act = effective(); Object.keys(tracks).forEach(function (k) { if (!tracks[k]) return; if (enabled && k === act) play(k); else pause(k); }); setUI(); refreshDisabled(); }
+    function unlock() {
+      if (unlocked) return; unlocked = true;
+      var act = effective();
+      Object.keys(tracks).forEach(function (k) {
+        var el = tracks[k]; if (!el) return;
+        // play() once per element to satisfy iOS; then pause only the INACTIVE ones
+        // (pausing the active here would race with apply() and stop the song that should play).
+        var fin = function () { if (k === act && enabled) { el.muted = false; } else { try { el.pause(); el.currentTime = 0; } catch (e) {} el.muted = false; } };
+        try { el.muted = true; var pr = el.play(); if (pr && pr.then) pr.then(fin).catch(function () { try { el.muted = false; } catch (_) {} }); else fin(); } catch (e) { try { el.muted = false; } catch (_) {} }
+      });
     }
-    function stop() { if (fadeSupported()) fadeTo(0, function () { audio.pause(); }); else audio.pause(); setUI(false); }
-    btn.addEventListener('click', function () { if (broken) return; if (!playing) start(); else stop(); });
-    let resumeOnReturn = false;
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) { if (playing) { resumeOnReturn = true; clearFade(); audio.pause(); } }
-      else if (resumeOnReturn) { resumeOnReturn = false; audio.play().catch(function () {}); if (canFade) audio.volume = MAX; }
-    });
+    function enable() { enabled = true; unlock(); apply(); }
     function arm() {
       if (armed) return; armed = true;
-      const evs = ['pointerdown', 'touchstart', 'keydown', 'click']; // (scroll can't unlock audio; touchstart covers touch-scroll)
+      const evs = ['pointerdown', 'touchstart', 'keydown', 'click'];
       function off() { evs.forEach(function (ev) { window.removeEventListener(ev, go, true); }); }
-      function go(e) {
-        off(); // first real gesture: stop auto-arming — from here the button is the only control
-        var onBtn = e && e.target && e.target.closest && e.target.closest('#music');
-        if (!onBtn) start(); // if they tapped the music button itself, let ITS handler toggle (no double-trigger)
-      }
-      evs.forEach(function (ev) { window.addEventListener(ev, go, true); }); // capture: run before the button's own click
+      function go(e) { off(); var onBtn = e && e.target && e.target.closest && e.target.closest('#music'); if (!onBtn) enable(); }
+      evs.forEach(function (ev) { window.addEventListener(ev, go, true); });
     }
-    function autoStart() { if (broken) return; start().then(function (okk) { if (!okk) arm(); }); } // browsers block sound before a gesture; arm fallback
+    function autoStart() { enabled = true; unlock(); apply(); arm(); } // try now; first gesture is the fallback
+    btn.addEventListener('click', function () { enabled = !enabled; if (enabled) unlock(); apply(); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) { Object.keys(timers).forEach(clearFade); Object.keys(tracks).forEach(function (k) { try { tracks[k] && tracks[k].pause(); } catch (e) {} }); } else if (enabled) apply(); });
     return {
-      setSong: function (src, title, artist, autoplay) {
-        if (playing) { clearFade(); audio.pause(); setUI(false); }
-        broken = false; btn.disabled = false; canFade = null; armed = false;
-        if (src) audio.src = src;
-        if (audio.load) audio.load();
-        btn.title = (title || 'Your Song') + ' by ' + (artist || 'The Artist');
+      setSong: function (mainSrc, mainMeta, finaleSrc, finaleMeta, autoplay) {
+        Object.keys(timers).forEach(clearFade);
+        if (mainSrc && tracks.main) tracks.main.src = mainSrc;
+        if (finaleSrc && tracks.finale) tracks.finale.src = finaleSrc;
+        ['main', 'finale'].forEach(function (k) { delete canFade[k]; broken[k] = false; if (tracks[k] && tracks[k].load) tracks[k].load(); });
+        unlocked = false; armed = false;
+        btn.title = ((mainMeta && mainMeta.title) || 'Your Song') + ' by ' + ((mainMeta && mainMeta.artist) || 'The Artist');
         if (autoplay) autoStart();
       },
-      autoStart: autoStart
+      setActive: function (k) { if (k !== activeKey) { activeKey = k; if (enabled) apply(); } },
+      // editor: play one track immediately from a freshly uploaded object URL (called inside a user gesture)
+      preview: function (key, src, title, artist) {
+        var el = tracks[key]; if (!el) return;
+        Object.keys(tracks).forEach(function (k) { if (k !== key) { clearFade(k); try { tracks[k].pause(); } catch (e) {} } });
+        el.src = src; if (el.load) el.load(); delete canFade[key]; broken[key] = false;
+        if (key === 'main') btn.title = (title || 'Your Song') + ' by ' + (artist || 'The Artist');
+        enabled = true; activeKey = key;
+        try { if (supports(key)) el.volume = 0; var pr = el.play(); if (pr && pr.catch) pr.catch(function () {}); fadeTo(key, MAX); } catch (e) {}
+        setUI();
+      }
     };
   }
   musicAPI = setupMusic();
   function applyMusic(c, autoplay) {
-    const m = (c && c.music) || {};
-    if (musicAPI) musicAPI.setSong(bust((m.file && m.file.trim()) || 'audio/song.mp3', c && c.rev), m.title, m.artist, autoplay);
+    if (!musicAPI) return;
+    const m = (c && c.music) || {}, m2 = (c && c.music2) || {};
+    musicAPI.setSong(
+      bust((m.file && m.file.trim()) || 'audio/song.mp3', c && c.rev), m,
+      bust((m2.file && m2.file.trim()) || 'audio/song2.mp3', c && c.rev), m2,
+      autoplay
+    );
   }
 
   /* ── Footer heart: 7-click easter egg ── */
@@ -589,6 +613,7 @@ img{ max-width:100%; height:auto; display:block; }
       if (over.signature != null) out.signature = over.signature;
       if (over.rev != null) out.rev = over.rev;
       if (over.music) out.music = Object.assign({}, out.music || {}, over.music);
+      if (over.music2) out.music2 = Object.assign({}, out.music2 || {}, over.music2);
       if (Array.isArray(over.moments)) over.moments.forEach(function (m, i) { out.moments[i] = Object.assign({}, out.moments[i] || {}, m); });
     }
     return out;
@@ -617,7 +642,8 @@ img{ max-width:100%; height:auto; display:block; }
     return new TextDecoder().decode(bytes);
   }
   // unique token so every uploaded file gets a NEW filename → a cache can never serve an old image
-  function uid() { return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
+  let _uidSeq = 0;
+  function uid() { return Date.now().toString(36) + '-' + (_uidSeq++).toString(36) + '-' + Math.random().toString(36).slice(2, 8); }
   async function ghApi(url, opts) {
     let res;
     try { res = await fetch('https://api.github.com' + url, opts); }
@@ -759,6 +785,9 @@ img{ max-width:100%; height:auto; display:block; }
     if (host && 'IntersectionObserver' in window) {
       const io = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) { burst(); io.disconnect(); } }); }, { threshold: 0.4 });
       io.observe(host);
+      // switch to the finale song when she reaches the bottom; back to the main song when she leaves
+      const mio = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (musicAPI) musicAPI.setActive(e.isIntersecting ? 'finale' : 'main'); }); }, { threshold: 0.55 });
+      mio.observe(host);
     }
     const replay = $('#replay');
     if (replay) replay.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' }); });
@@ -782,12 +811,14 @@ img{ max-width:100%; height:auto; display:block; }
     let DRAFT = null;
     let pendingFiles = {};   // i -> {base64, path, size}  (new photo originals to commit)
     let previewUrls = {};    // i -> object URL for in-session preview
-    let pendingAudio = null;  // {base64, path, size} new song to commit
-    let audioPreviewUrl = null;
+    let pendingAudio = null;   // {base64, path, size} new MAIN song to commit
+    let pendingAudio2 = null;  // {base64, path, size} new FINALE song to commit
+    let audioPreviewUrl = null, audioPreviewUrl2 = null;
     function clearPending() {
       Object.keys(previewUrls).forEach(function (k) { try { URL.revokeObjectURL(previewUrls[k]); } catch (e) {} });
       if (audioPreviewUrl) { try { URL.revokeObjectURL(audioPreviewUrl); } catch (e) {} }
-      pendingFiles = {}; previewUrls = {}; pendingAudio = null; audioPreviewUrl = null;
+      if (audioPreviewUrl2) { try { URL.revokeObjectURL(audioPreviewUrl2); } catch (e) {} }
+      pendingFiles = {}; previewUrls = {}; pendingAudio = null; pendingAudio2 = null; audioPreviewUrl = null; audioPreviewUrl2 = null;
     }
 
     function openGate() { $('#admin-err').hidden = true; gate.hidden = false; setTimeout(function () { $('#admin-code').focus(); }, 50); }
@@ -856,32 +887,43 @@ img{ max-width:100%; height:auto; display:block; }
       $('#admin-sign').value = DRAFT.signature || '';
 
       if (!DRAFT.music) DRAFT.music = { title: 'Your Song', artist: 'The Artist', file: 'audio/song.mp3' };
-      const mus = document.createElement('section'); mus.className = 'admin-letter';
-      mus.innerHTML =
-        '<h4 style="color:var(--gold);font-family:var(--serif);font-size:15px;letter-spacing:1px;text-transform:uppercase;margin:4px 0 10px">Music (plays when she opens it)</h4>' +
-        '<label>Song title</label><input type="text" id="am-song-title">' +
-        '<label>Artist</label><input type="text" id="am-song-artist">' +
-        '<label>Song file</label><label class="admin-upload" style="display:block">Choose / change song<input type="file" accept="audio/*,.mp3,.m4a"></label>' +
-        '<p class="admin-note" id="am-song-name" style="padding:8px 0 0"></p>';
-      body.appendChild(mus);
-      $('#am-song-title').value = DRAFT.music.title || '';
-      $('#am-song-artist').value = DRAFT.music.artist || '';
-      const songName = function () { $('#am-song-name').textContent = 'Current: ' + (DRAFT.music.file || 'audio/song.mp3') + (pendingAudio ? '  (new — Publish to upload)' : ''); };
-      songName();
-      $('.admin-upload input', mus).addEventListener('change', function (e) {
-        const f = e.target.files && e.target.files[0]; if (!f) return;
-        let ext = (f.name.split('.').pop() || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (['mp3', 'm4a', 'aac', 'ogg', 'wav'].indexOf(ext) < 0) ext = 'mp3';
-        readFileBase64(f).then(function (b64) {
-          pendingAudio = { base64: b64, path: 'audio/song-' + uid() + '.' + ext, size: f.size };
-          DRAFT.music.file = pendingAudio.path;
-          if (audioPreviewUrl) { try { URL.revokeObjectURL(audioPreviewUrl); } catch (e) {} }
-          audioPreviewUrl = URL.createObjectURL(f);
-          if (musicAPI) musicAPI.setSong(audioPreviewUrl, $('#am-song-title').value, $('#am-song-artist').value, true); // play preview now
-          songName();
-          toast('Song ready (' + Math.round(f.size / 1024) + ' KB) — Publish to upload');
-        }).catch(function () { toast('Could not read that audio file'); });
-      });
+      if (!DRAFT.music2) DRAFT.music2 = { title: 'Finale Song', artist: 'The Artist', file: 'audio/song2.mp3' };
+      // Two song slots: main (plays throughout) + finale (plays when she reaches the bottom).
+      function songSection(opts) {
+        const sec = document.createElement('section'); sec.className = 'admin-letter';
+        sec.innerHTML =
+          '<h4 style="color:var(--gold);font-family:var(--serif);font-size:15px;letter-spacing:1px;text-transform:uppercase;margin:4px 0 10px">' + opts.heading + '</h4>' +
+          '<label>Song title</label><input type="text" class="am-st">' +
+          '<label>Artist</label><input type="text" class="am-sa">' +
+          '<label>Song file</label><label class="admin-upload" style="display:block">Choose / change song<input type="file" accept="audio/*,.mp3,.m4a"></label>' +
+          '<p class="admin-note am-sn" style="padding:8px 0 0"></p>';
+        body.appendChild(sec);
+        const st = $('.am-st', sec), sa = $('.am-sa', sec), sn = $('.am-sn', sec);
+        st.value = opts.obj.title || ''; sa.value = opts.obj.artist || '';
+        const refresh = function () { sn.textContent = 'Current: ' + (opts.obj.file || opts.defaultFile) + (opts.pending() ? '  (new — Publish to upload)' : ''); };
+        refresh();
+        st.addEventListener('input', function () { opts.obj.title = st.value; });
+        sa.addEventListener('input', function () { opts.obj.artist = sa.value; });
+        $('.admin-upload input', sec).addEventListener('change', function (e) {
+          const f = e.target.files && e.target.files[0]; if (!f) return;
+          let ext = (f.name.split('.').pop() || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (['mp3', 'm4a', 'aac', 'ogg', 'wav'].indexOf(ext) < 0) ext = 'mp3';
+          readFileBase64(f).then(function (b64) {
+            const url = URL.createObjectURL(f);
+            opts.setPending({ base64: b64, path: opts.prefix + uid() + '.' + ext, size: f.size }, url);
+            opts.obj.file = opts.getPending().path;
+            if (musicAPI) musicAPI.preview(opts.track, url, st.value, sa.value);
+            refresh();
+            toast(opts.label + ' ready (' + Math.round(f.size / 1024) + ' KB) — Publish to upload', true);
+          }).catch(function () { toast('Could not read that audio file'); });
+        });
+      }
+      songSection({ heading: 'Main song (plays when she opens it)', track: 'main', obj: DRAFT.music, defaultFile: 'audio/song.mp3', prefix: 'audio/song-', label: 'Song',
+        pending: function () { return !!pendingAudio; }, getPending: function () { return pendingAudio; },
+        setPending: function (p, url) { pendingAudio = p; if (audioPreviewUrl) { try { URL.revokeObjectURL(audioPreviewUrl); } catch (e) {} } audioPreviewUrl = url; } });
+      songSection({ heading: 'Finale song (plays at the bottom)', track: 'finale', obj: DRAFT.music2, defaultFile: 'audio/song2.mp3', prefix: 'audio/song2-', label: 'Finale song',
+        pending: function () { return !!pendingAudio2; }, getPending: function () { return pendingAudio2; },
+        setPending: function (p, url) { pendingAudio2 = p; if (audioPreviewUrl2) { try { URL.revokeObjectURL(audioPreviewUrl2); } catch (e) {} } audioPreviewUrl2 = url; } });
 
       const ghCfg = loadGH();
       const gh = document.createElement('details'); gh.className = 'admin-collapse'; gh.id = 'gh-setup';
@@ -935,9 +977,7 @@ img{ max-width:100%; height:auto; display:block; }
       });
       DRAFT.letter = $('#admin-letter-text').value;
       DRAFT.signature = $('#admin-sign').value;
-      if (!DRAFT.music) DRAFT.music = {};
-      if ($('#am-song-title')) DRAFT.music.title = $('#am-song-title').value;
-      if ($('#am-song-artist')) DRAFT.music.artist = $('#am-song-artist').value;
+      // song titles/artists are live-bound to DRAFT.music / DRAFT.music2 by the song-section inputs
       DRAFT.rev = Date.now();   // mark this edit as the newest — wins across devices + busts caches
     }
     async function publishToGitHub() {
@@ -947,7 +987,7 @@ img{ max-width:100%; height:auto; display:block; }
       readForm();
       const H = { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' };
       const base = '/repos/' + c.owner + '/' + c.repo;
-      const json = JSON.stringify({ moments: DRAFT.moments, letter: DRAFT.letter, signature: DRAFT.signature, music: DRAFT.music }, null, 2);
+      const json = JSON.stringify({ moments: DRAFT.moments, letter: DRAFT.letter, signature: DRAFT.signature, music: DRAFT.music, music2: DRAFT.music2 }, null, 2);
       const btn = $('#admin-publish'); const old = btn.textContent; btn.disabled = true; btn.textContent = 'Publishing…';
       try {
         // 1) Pre-check repo + write access — clearest possible error, before we change anything.
@@ -970,6 +1010,7 @@ img{ max-width:100%; height:auto; display:block; }
             if (pendingFiles[i] && oldContent.moments && oldContent.moments[i]) markDelete(oldContent.moments[i].photo, m.photo, 'photos/moment' + (i + 1) + '.jpg');
           });
           if (pendingAudio && oldContent.music) markDelete(oldContent.music.file, DRAFT.music.file, 'audio/song.mp3');
+          if (pendingAudio2 && oldContent.music2) markDelete(oldContent.music2.file, DRAFT.music2.file, 'audio/song2.mp3');
         }
         // 2) Create every blob once (content.json + new photos + new song). Blob shas are reusable across retries.
         const treeItems = [{ path: 'content.json', mode: '100644', type: 'blob', sha: (await ghApi(base + '/git/blobs', { method: 'POST', headers: H, body: JSON.stringify({ content: utf8ToB64(json), encoding: 'base64' }) })).sha }];
@@ -985,7 +1026,12 @@ img{ max-width:100%; height:auto; display:block; }
           const ab = await ghApi(base + '/git/blobs', { method: 'POST', headers: H, body: JSON.stringify({ content: pendingAudio.base64, encoding: 'base64' }) });
           treeItems.push({ path: pendingAudio.path, mode: '100644', type: 'blob', sha: ab.sha });
         }
-        const extra = (idxs.length ? ' +' + idxs.length + ' photo' + (idxs.length > 1 ? 's' : '') : '') + (pendingAudio ? ' +song' : '');
+        if (pendingAudio2) {
+          btn.textContent = 'Finale song…';
+          const ab2 = await ghApi(base + '/git/blobs', { method: 'POST', headers: H, body: JSON.stringify({ content: pendingAudio2.base64, encoding: 'base64' }) });
+          treeItems.push({ path: pendingAudio2.path, mode: '100644', type: 'blob', sha: ab2.sha });
+        }
+        const extra = (idxs.length ? ' +' + idxs.length + ' photo' + (idxs.length > 1 ? 's' : '') : '') + (pendingAudio ? ' +song' : '') + (pendingAudio2 ? ' +finale-song' : '');
         // 3) Commit on a FRESH base each attempt; retry once if the branch moved under us.
         btn.textContent = 'Saving to GitHub…';
         let done = false;
@@ -998,7 +1044,7 @@ img{ max-width:100%; height:auto; display:block; }
           catch (e) { if ((e.status === 422 || e.status === 409) && attempt === 0) continue; throw e; }
         }
         CONTENT = clone(DRAFT); saveLocal(CONTENT);
-        const map = previewUrls; pendingFiles = {}; pendingAudio = null;
+        const map = previewUrls; pendingFiles = {}; pendingAudio = null; pendingAudio2 = null;
         renderTimeline(CONTENT, true, map); setLetterStatic(CONTENT);
         toast('✓ Published! Live in ~1 min', true);
         // Best-effort cleanup: delete the files we replaced. Publish already succeeded, so any
@@ -1029,19 +1075,20 @@ img{ max-width:100%; height:auto; display:block; }
       readForm(); CONTENT = clone(DRAFT);
       const ok = saveLocal(CONTENT);
       renderTimeline(CONTENT, true, previewUrls); setLetterStatic(CONTENT);
-      if (musicAPI) musicAPI.setSong(audioPreviewUrl || (CONTENT.music && CONTENT.music.file) || 'audio/song.mp3', CONTENT.music && CONTENT.music.title, CONTENT.music && CONTENT.music.artist, false);
-      const pend = Object.keys(pendingFiles).length + (pendingAudio ? 1 : 0);
+      // music keeps whatever's currently playing (incl. any just-uploaded preview); no reset on Save
+      const pend = Object.keys(pendingFiles).length + (pendingAudio ? 1 : 0) + (pendingAudio2 ? 1 : 0);
       toast(ok ? ('Previewing!' + (pend ? ' Publish to upload ' + pend + ' file' + (pend > 1 ? 's' : '') : '')) : 'Previewing (could not save on device)');
     });
     $('#admin-export').addEventListener('click', function () {
       readForm();
-      const data = { moments: DRAFT.moments, letter: DRAFT.letter, signature: DRAFT.signature, music: DRAFT.music };
+      const data = { moments: DRAFT.moments, letter: DRAFT.letter, signature: DRAFT.signature, music: DRAFT.music, music2: DRAFT.music2 };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'content.json'; document.body.appendChild(a); a.click();
       setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-      // also download any newly uploaded photos / song so you can commit them
+      // also download any newly uploaded photos / songs so you can commit them
       const dls = Object.keys(pendingFiles).map(function (k) { return pendingFiles[k]; });
       if (pendingAudio) dls.push(pendingAudio);
+      if (pendingAudio2) dls.push(pendingAudio2);
       dls.forEach(function (pf, n) {
         setTimeout(function () {
           const a2 = document.createElement('a'); a2.href = 'data:application/octet-stream;base64,' + pf.base64; a2.download = pf.path.split('/').pop(); document.body.appendChild(a2); a2.click(); a2.remove();
@@ -1053,7 +1100,7 @@ img{ max-width:100%; height:auto; display:block; }
       if (!window.confirm('Reset all local edits back to default?')) return;
       try { localStorage.removeItem(STORE_KEY); } catch (e) {}
       clearPending();
-      resolveContent().then(function (c) { CONTENT = c; renderTimeline(CONTENT, true); setLetterStatic(CONTENT); buildForm(); toast('Reset to default'); });
+      resolveContent().then(function (c) { CONTENT = c; renderTimeline(CONTENT, true); setLetterStatic(CONTENT); applyMusic(CONTENT); buildForm(); toast('Reset to default'); });
     });
 
     function enterAdmin() { if (isAuthed()) openPanel(); else openGate(); }

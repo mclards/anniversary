@@ -86,14 +86,21 @@ photos/moment1.jpg   photos/moment2.jpg   photos/moment3.jpg   photos/moment4.jp
 > Placeholder images are already there. If a photo is ever missing, the page shows a tasteful
 > on-brand placeholder automatically — never a broken-image icon.
 
-## The song (chosen in the editor)
-Open the editor → **Music** section → upload your MP3 and set the **title / artist**, then
-**Publish**. The song commits as `audio/song.mp3` and plays for her automatically.
+## The songs (chosen in the editor)
+Open the editor → there are **two Music sections**:
+
+- **Main song** — plays the whole time she scrolls. Upload your MP3 + set title/artist.
+- **Finale song** — plays only when she **reaches the bottom** ("One year down, a lifetime to
+  go."). When she scrolls back up, the **main song resumes** right where it left off — and so on.
+
+Then **Publish**. Each upload is committed with a unique filename (so a cached old song can
+never play), and the previous file is removed automatically.
 
 **About autoplay:** browsers (especially iPhone Safari) block sound until the visitor
-interacts, so the song **starts the instant she taps or scrolls** the page — which is right
-away on a scroll-through site. It fades in gently, and the bottom-right button pauses/plays it.
-If no song is set, the button just quietly disables itself.
+interacts, so the music **starts the instant she taps or scrolls** — right away on a
+scroll-through site. It fades between the two songs, and the bottom-right button is a master
+play/pause. If you don't set a finale song, the main song simply keeps playing at the bottom;
+if no song is set at all, the button quietly disables itself.
 
 ---
 
