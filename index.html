@@ -281,11 +281,22 @@ img{ max-width:100%; height:auto; display:block; }
   .music-toggle{ right:calc(16px + env(safe-area-inset-right)); bottom:calc(16px + env(safe-area-inset-bottom)); width:54px; height:54px; }
 }
 
+/* ════ LOADER (preloads songs + photos so nothing stalls) ════ */
+#loader{ position:fixed; inset:0; z-index:10090; display:flex; align-items:center; justify-content:center; background:radial-gradient(ellipse 120% 90% at 50% 60%, rgba(139,26,74,.18), var(--bg-deep) 62%); transition:opacity .6s ease, visibility .6s ease; }
+body.loaded #loader{ opacity:0; visibility:hidden; }
+body.loading{ overflow:hidden; }
+.loader-inner{ text-align:center; padding:24px; max-width:88vw; }
+.loader-heart{ font-size:46px; line-height:1; color:var(--blush); text-shadow:0 6px 34px rgba(232,160,176,.45); animation:lpulse 1.15s ease-in-out infinite; }
+.loader-text{ font-family:var(--serif); font-style:italic; color:var(--muted); margin:18px 0 20px; font-size:16px; letter-spacing:.4px; }
+.loader-bar{ width:200px; max-width:64vw; height:3px; border-radius:3px; background:rgba(255,255,255,.10); margin:0 auto; overflow:hidden; }
+.loader-bar i{ display:block; height:100%; width:0; background:linear-gradient(90deg,var(--gold),var(--blush)); border-radius:3px; transition:width .4s ease; }
+@keyframes lpulse{ 0%,100%{ transform:scale(1); opacity:.85; } 50%{ transform:scale(1.16); opacity:1; } }
+
 /* ════ REDUCED MOTION ════ */
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
   .particle, .chevron, .heart, .cursor, .music-toggle.playing{ animation:none !important; }
-  .cnum.beat, .lightbox.open img{ animation:none !important; }
+  .cnum.beat, .lightbox.open img, .loader-heart{ animation:none !important; }
   .moment{ transition:none !important; }
   .fade{ opacity:1 !important; animation:none; }
   .reveal{ opacity:1 !important; transform:none !important; transition:none; }
@@ -294,7 +305,15 @@ img{ max-width:100%; height:auto; display:block; }
 </style>
 </head>
 
-<body>
+<body class="loading">
+
+<div id="loader" role="status" aria-label="Loading">
+  <div class="loader-inner">
+    <div class="loader-heart">♥</div>
+    <p class="loader-text">Para sa'yo, Baby…</p>
+    <div class="loader-bar"><i id="loader-fill"></i></div>
+  </div>
+</div>
 
 <div class="scroll-progress" id="progress" aria-hidden="true"></div>
 
@@ -559,7 +578,22 @@ img{ max-width:100%; height:auto; display:block; }
         btn.title = ((mainMeta && mainMeta.title) || 'Your Song') + ' by ' + ((mainMeta && mainMeta.artist) || 'The Artist');
         if (autoplay) autoStart();
       },
-      setActive: function (k) { if (k !== activeKey) { activeKey = k; if (enabled) apply(); } },
+      begin: autoStart,   // start music after the loader (try now, else first gesture) — audio is already buffered
+      ready: function (keys) {  // resolve when the given track(s) can start with no delay (or skip if missing/broken)
+        return Promise.all((keys || Object.keys(tracks)).map(function (k) {
+          return new Promise(function (res) {
+            var el = tracks[k];
+            if (!el || !el.getAttribute('src') || broken[k]) return res();
+            if (el.readyState >= 3) return res();   // HAVE_FUTURE_DATA — enough to begin instantly
+            var evs = ['canplaythrough', 'canplay', 'loadeddata', 'error'];
+            var done = false; function fin() { if (done) return; done = true; evs.forEach(function (ev) { el.removeEventListener(ev, fin); }); res(); }
+            evs.forEach(function (ev) { el.addEventListener(ev, fin); });
+            try { el.preload = 'auto'; el.load(); } catch (e) {}
+            setTimeout(fin, 8000); // never hang on a slow/broken song — it keeps buffering in the background
+          });
+        }));
+      },
+      setActive: function (k) { if (k !== activeKey) { activeKey = k; if (enabled) apply(); } }, // scroll picks the track
       // editor: play one track immediately from a freshly uploaded object URL (called inside a user gesture)
       preview: function (key, src, title, artist) {
         var el = tracks[key]; if (!el) return;
@@ -785,12 +819,21 @@ img{ max-width:100%; height:auto; display:block; }
     if (host && 'IntersectionObserver' in window) {
       const io = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) { burst(); io.disconnect(); } }); }, { threshold: 0.4 });
       io.observe(host);
-      // switch to the finale song when she reaches the bottom; back to the main song when she leaves
-      const mio = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (musicAPI) musicAPI.setActive(e.isIntersecting ? 'finale' : 'main'); }); }, { threshold: 0.55 });
-      mio.observe(host);
     }
     const replay = $('#replay');
     if (replay) replay.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' }); });
+  })();
+
+  /* ── Finale song starts at the LETTER ("For You") — so it plays while she reads it, and stays
+        through the finale; the main song resumes when she scrolls back up above the letter. ── */
+  (function letterMusic() {
+    const letterEl = $('#letter'); if (!letterEl) return;
+    let ticking = false;
+    function pick() { ticking = false; if (musicAPI) musicAPI.setActive(letterEl.getBoundingClientRect().top < window.innerHeight * 0.6 ? 'finale' : 'main'); }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(pick); } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    pick();
   })();
 
   /* ════════════════  ADMIN EDITOR  ════════════════ */
@@ -830,16 +873,15 @@ img{ max-width:100%; height:auto; display:block; }
     }
     function isAuthed() { try { return sessionStorage.getItem('anniv_admin') === '1'; } catch (e) { return false; } }
 
-    function buildForm() {
+    async function buildForm() {
+      // Always reload the LATEST published content from GitHub when the editor opens, so edits
+      // coincide across every device — no stale page-load copy, no conflicting local draft.
+      try {
+        const r = await fetch('content.json?_=' + Date.now(), { cache: 'no-store' });
+        if (r && r.ok) { CONTENT = merge(defaults(), await r.json()); renderTimeline(CONTENT, true); setLetterStatic(CONTENT); }
+      } catch (e) { /* offline — keep whatever we already have, never fall back to the template */ }
       DRAFT = clone(CONTENT);
       clearPending();
-      // Editor-only safety net: restore THIS device's unsaved draft if it's newer than what's
-      // published — so you don't lose unsaved typing. This never changes what visitors see.
-      const localDraft = loadLocal();
-      if (localDraft && Number(localDraft.rev || 0) > Number((CONTENT && CONTENT.rev) || 0)) {
-        DRAFT = merge(CONTENT, localDraft);
-        setTimeout(function () { toast('Restored your unpublished draft — Publish to save it'); }, 500);
-      }
       body.innerHTML = '';
       const ghead = document.createElement('p'); ghead.className = 'admin-group-head'; ghead.textContent = 'Your moments';
       body.appendChild(ghead);
@@ -1063,7 +1105,7 @@ img{ max-width:100%; height:auto; display:block; }
         btn.disabled = false; btn.textContent = old;
       }
     }
-    function openPanel() { buildForm(); panel.hidden = false; requestAnimationFrame(function () { panel.classList.add('open'); }); }
+    function openPanel() { body.innerHTML = '<p class="admin-group-head" style="padding:24px 2px">Loading your latest…</p>'; panel.hidden = false; requestAnimationFrame(function () { panel.classList.add('open'); }); buildForm(); }
     function closePanel() { panel.classList.remove('open'); setTimeout(function () { panel.hidden = true; }, 350); }
 
     $('#admin-enter').addEventListener('click', tryEnter);
@@ -1097,10 +1139,11 @@ img{ max-width:100%; height:auto; display:block; }
       toast(dls.length ? ('Downloaded content.json + ' + dls.length + ' file' + (dls.length > 1 ? 's' : '') + ' (keep their folders)') : 'Downloaded content.json');
     });
     $('#admin-reset').addEventListener('click', function () {
-      if (!window.confirm('Reset all local edits back to default?')) return;
+      if (!window.confirm('Discard unsaved edits on this device and reload the latest published version?')) return;
       try { localStorage.removeItem(STORE_KEY); } catch (e) {}
       clearPending();
-      resolveContent().then(function (c) { CONTENT = c; renderTimeline(CONTENT, true); setLetterStatic(CONTENT); applyMusic(CONTENT); buildForm(); toast('Reset to default'); });
+      buildForm();   // re-fetches the latest published content.json + rebuilds the form
+      toast('Reloaded the latest published version');
     });
 
     function enterAdmin() { if (isAuthed()) openPanel(); else openGate(); }
@@ -1111,13 +1154,40 @@ img{ max-width:100%; height:auto; display:block; }
   }
 
   /* ════════════════  INIT  ════════════════ */
+  function loaderProgress(p) { var f = document.getElementById('loader-fill'); if (f) f.style.width = Math.round(Math.max(0, Math.min(1, p)) * 100) + '%'; }
+  function hideLoader() { document.body.classList.remove('loading'); document.body.classList.add('loaded'); setTimeout(function () { var l = document.getElementById('loader'); if (l && l.parentNode) l.parentNode.removeChild(l); }, 700); }
+  function preloadImages(c) {
+    return (c.moments || []).map(function (m, i) {
+      return new Promise(function (res) { var im = new Image(); var done = false; function fin() { if (done) return; done = true; res(); } im.onload = fin; im.onerror = fin; im.src = bust(m.photo || ('photos/moment' + (i + 1) + '.jpg'), c.rev); setTimeout(fin, 8000); });
+    });
+  }
   (async function init() {
     CONTENT = await resolveContent();
     renderTimeline(CONTENT, false);
     setupReveal();
     setupLetter(CONTENT);
-    applyMusic(CONTENT, true);   // set the song + try to autoplay (falls back to first gesture)
+    applyMusic(CONTENT, false);   // set song srcs now; we START after preload so playback has zero delay
     setupAdmin();
+
+    // Loading screen: buffer the songs (+ photos + fonts) before revealing, so nothing stalls.
+    var fast = /^#(edit|admin)$/.test(location.hash || '');   // editor: don't make him wait on full songs
+    var tasks = [];
+    if (document.fonts && document.fonts.ready) tasks.push(document.fonts.ready.catch(function () {}));
+    tasks = tasks.concat(preloadImages(CONTENT));
+    if (musicAPI && musicAPI.ready) {
+      musicAPI.ready(['finale']);                              // buffer the finale song in the background (ready before she reaches the letter)
+      if (!fast) tasks.push(musicAPI.ready(['main']));         // block the reveal on the MAIN song only, so it plays with zero delay
+    }
+    var total = tasks.length || 1, done = 0;
+    loaderProgress(0.08);
+    tasks.forEach(function (t) { t.then(function () { done++; loaderProgress(0.08 + 0.92 * (done / total)); }); });
+    await new Promise(function (resolve) {
+      var settled = false; function go() { if (settled) return; settled = true; resolve(); }
+      Promise.all(tasks).then(function () { loaderProgress(1); go(); });
+      setTimeout(function () { loaderProgress(1); go(); }, fast ? 2200 : 11000); // safety: always reveal
+    });
+    hideLoader();
+    if (musicAPI) musicAPI.begin();   // arm autoplay now that audio is buffered → instant on her first gesture
   })();
 
 })();
