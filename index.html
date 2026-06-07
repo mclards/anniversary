@@ -103,6 +103,9 @@ img{ max-width:100%; height:auto; display:block; }
 .timeline-head{ text-align:center; margin:0 auto 56px; max-width:680px; }
 .timeline-eyebrow{ font-family:var(--sans); font-weight:400; font-size:12px; text-transform:uppercase; letter-spacing:3px; color:var(--gold); margin:0 0 10px; }
 .timeline-heading{ font-family:var(--serif); font-weight:700; font-size:clamp(1.8rem,6vw,34px); color:var(--text); margin:0; letter-spacing:.5px; text-wrap:balance; }
+.timeline-hint{ display:inline-flex; align-items:center; gap:7px; font-family:var(--sans); font-weight:300; font-style:italic; font-size:13px; color:var(--muted); margin:16px 0 0; letter-spacing:.3px; }
+.timeline-hint svg{ width:15px; height:15px; flex:none; stroke:var(--gold); opacity:.85; }
+.timeline-hint b{ color:var(--blush); font-weight:400; font-style:normal; }
 .timeline-inner{ max-width:1100px; margin:0 auto; display:flex; flex-direction:column; gap:42px; counter-reset:moment; }
 .moment{ position:relative; counter-increment:moment; display:grid; grid-template-columns:1fr 1fr; align-items:stretch; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:box-shadow .4s ease, transform .4s ease; }
 .moment:hover{ box-shadow:0 14px 40px rgba(0,0,0,.32); }
@@ -401,6 +404,7 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
   <div class="timeline-head">
     <p class="timeline-eyebrow">our story</p>
     <h2 class="timeline-heading">the moments I won't forget</h2>
+    <p class="timeline-hint"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg><span>Tap any photo to view it <b>full-screen</b></span></p>
   </div>
   <div class="timeline-inner" id="timeline-inner"></div>
 </section>
