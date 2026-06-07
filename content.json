@@ -1,0 +1,53 @@
+{
+  "moments": [
+    {
+      "id": 1,
+      "date": "June 2025",
+      "title": "Where It Started",
+      "caption": "Hindi simple ang umpisa natin, Baby Jezel — magulo, puno ng tanong, and I was overthinking kung tama ba 'to. Pero kahit ganun, hindi kita binitawan. I chose you, kahit takot ako.",
+      "photo": "photos/moment1.png"
+    },
+    {
+      "id": 2,
+      "date": "September 2025",
+      "title": "First Dates, Kahit Kapos",
+      "caption": "Maliit lang ang sahod ko noon, minsan wala talagang pera para mag-date. Pero lagi tayong nakakahanap ng paraan para magkita, kahit simple lang. Effort over money, palagi. Yun ang paborito kong mga araw.",
+      "photo": "photos/moment2.jpg"
+    },
+    {
+      "id": 3,
+      "date": "November 2025",
+      "title": "Yung Mga Pagsubok",
+      "caption": "Hindi laging smooth, Baby Jezel. May mga gabi na sobra akong nag-overthink, may mga misunderstanding na akala natin katapusan na. Oo, minsan masyado akong protective — alam ko, age gap lang siguro. Pero pinag-usapan natin, at hindi tayo sumuko.",
+      "photo": "photos/moment3.jpg"
+    },
+    {
+      "id": 4,
+      "date": "February 2026",
+      "title": "When We Got Far",
+      "caption": "Tapos biglang lumayo tayo — LDR na. Bago pa sa amin ang totoong distance, kaya hindi talaga madali noong una. Pero kahit malayo, hindi ako bumitaw. Never.",
+      "photo": "photos/moment4.jpg"
+    },
+    {
+      "id": 5,
+      "date": "April 2026",
+      "title": "Boring Pero Paborito",
+      "caption": "Karamihan sa gabi natin karon, video call na lang — ikaw busy sa phone, ako tahimik lang nakatingin sa'yo. Walang grabe, walang exciting. Pero yun pala, yun na yun. Basta ikaw, okay na ko.",
+      "photo": "photos/moment5.jpg"
+    },
+    {
+      "id": 6,
+      "date": "June 2026",
+      "title": "Now, Kahit Malayo",
+      "caption": "Lagi mong iniisip na hindi ka bagay sa akin o sa pamilya ko kasi mas mataas daw ang status nila. Pero simula pa lang, hindi ako sumasang-ayon diyan, and I never will. Ikaw ang bagay sa akin — walang kinalaman ang pera o pamilya. Kahit gaano kalayo ngayon, ikaw pa rin ang pinili ko.",
+      "photo": "photos/moment6.jpg"
+    }
+  ],
+  "letter": "Baby Jezel,\n\nOne year na tayo. Honestly, di ko akalain we'd make it this far — and not because of you, ha. Kasi ang dami nating pinagdaanan. Hindi simple ang umpisa natin, and now this distance makes it harder pa gyud.\n\nYou always say you're not enough — na hindi ka bagay sa akin, na hindi ka raw bagay sa pamilya ko kasi mas mataas ang status nila. Baby, ilang beses na ba kitang kinontra? I never cared about money or status. Ikaw ang pinili ko — hindi yung sahod mo, hindi yung pamilya mo. Ikaw lang. Always.\n\nOo na, minsan sobra akong mag-alala, medyo controlling, laging tanong kung kumain ka na, kung asa ka. Age gap lang 'yan, promise — natatakot lang akong mawala ka. Sorry sa overthinking, sa mga misunderstanding, sa mga gabing walang pamasahe para magkita tayo.\n\nPero kahit malayo, kahit kapos, ikaw pa rin ang pinili ko. And I'll keep choosing you, promise.\n\nI love you, Baby Jezel. For real — hindi lang 'to pang-video call.",
+  "signature": "— Baba",
+  "music": {
+    "title": "Your Song",
+    "artist": "The Artist",
+    "file": "audio/song.mp3"
+  }
+}
