@@ -906,7 +906,14 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
     function finish() { cursor.hidden = true; sign.classList.add('show'); }
     function run() { if (letterTyped) return; letterTyped = true; if (REDUCED) { out.textContent = text; finish(); return; } cursor.hidden = false; let i = 0; (function type() { if (i < text.length) { out.textContent += text.charAt(i++); setTimeout(type, 38); } else finish(); })(); }
     if (!('IntersectionObserver' in window)) { run(); return; }
-    const io = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) { run(); io.disconnect(); } }); }, { threshold: 0.35 });
+    // Trigger when the TOP of the letter scrolls into the upper ~60% of the viewport — i.e. she has
+    // reached the section. A percentage `threshold` can't work here: the letter is min-height:100svh
+    // and a long letter makes the section far taller than a phone's viewport, so the visible ratio
+    // never reaches a high threshold and typing would never start. rootMargin keys off entry instead,
+    // so it fires reliably on mobile regardless of how tall the letter is.
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { run(); io.disconnect(); } });
+    }, { threshold: 0, rootMargin: '0px 0px -40% 0px' });
     io.observe(host);
   }
 
