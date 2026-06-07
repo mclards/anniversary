@@ -460,6 +460,10 @@ body.loading{ overflow:hidden; }
   };
   /* ═════════════════════════════════════════════════════ */
 
+  // Always begin at the very top on every (re)load — never restore a mid-page scroll position.
+  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+  try { window.scrollTo(0, 0); } catch (e) {}
+
   const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $  = function (s, c) { return (c || document).querySelector(s); };
   const $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
@@ -547,13 +551,15 @@ body.loading{ overflow:hidden; }
     function refreshDisabled() { btn.disabled = !(avail('main') || avail('finale')); } // only useless if BOTH songs are missing
     function apply() { var act = effective(); Object.keys(tracks).forEach(function (k) { if (!tracks[k]) return; if (enabled && k === act) play(k); else pause(k); }); setUI(); refreshDisabled(); }
     function unlock() {
-      if (unlocked) return; unlocked = true;
+      if (unlocked) return;
       var act = effective();
       Object.keys(tracks).forEach(function (k) {
         var el = tracks[k]; if (!el) return;
-        // play() once per element to satisfy iOS; then pause only the INACTIVE ones
-        // (pausing the active here would race with apply() and stop the song that should play).
-        var fin = function () { if (k === act && enabled) { el.muted = false; } else { try { el.pause(); el.currentTime = 0; } catch (e) {} el.muted = false; } };
+        // play() each element once inside a REAL gesture so iOS allows programmatic play() later — the
+        // finale is triggered by SCROLL (not a tap), so it must be unlocked here or it stays silent.
+        // Mark unlocked only when a play() actually RESOLVES, so a blocked attempt (e.g. begin() with no
+        // gesture on iOS) can't fake it and skip the real first-gesture unlock. Pause only the INACTIVE ones.
+        var fin = function () { unlocked = true; if (k === act && enabled) { el.muted = false; } else { try { el.pause(); el.currentTime = 0; } catch (e) {} el.muted = false; } };
         try { el.muted = true; var pr = el.play(); if (pr && pr.then) pr.then(fin).catch(function () { try { el.muted = false; } catch (_) {} }); else fin(); } catch (e) { try { el.muted = false; } catch (_) {} }
       });
     }
@@ -579,17 +585,20 @@ body.loading{ overflow:hidden; }
         if (autoplay) autoStart();
       },
       begin: autoStart,   // start music after the loader (try now, else first gesture) — audio is already buffered
-      ready: function (keys) {  // resolve when the given track(s) can start with no delay (or skip if missing/broken)
+      ready: function (keys) {  // resolve when the given track(s) are buffered enough to play with NO delay
         return Promise.all((keys || Object.keys(tracks)).map(function (k) {
           return new Promise(function (res) {
             var el = tracks[k];
-            if (!el || !el.getAttribute('src') || broken[k]) return res();
-            if (el.readyState >= 3) return res();   // HAVE_FUTURE_DATA — enough to begin instantly
-            var evs = ['canplaythrough', 'canplay', 'loadeddata', 'error'];
-            var done = false; function fin() { if (done) return; done = true; evs.forEach(function (ev) { el.removeEventListener(ev, fin); }); res(); }
-            evs.forEach(function (ev) { el.addEventListener(ev, fin); });
+            if (!el || !el.getAttribute('src') || broken[k]) return res();   // missing/broken song → don't wait on it
+            if (el.readyState >= 4) return res();   // HAVE_ENOUGH_DATA — fully ready
+            var done = false;
+            function fin() { if (done) return; done = true; el.removeEventListener('canplaythrough', fin); el.removeEventListener('error', fin); res(); }
+            el.addEventListener('canplaythrough', fin);   // truly ready (can play through without stalling)
+            el.addEventListener('error', fin);
             try { el.preload = 'auto'; el.load(); } catch (e) {}
-            setTimeout(fin, 8000); // never hang on a slow/broken song — it keeps buffering in the background
+            // grace fallback: if it can at least START (canplay) but canplaythrough is slow, accept after 6s
+            setTimeout(function () { if (!done && el.readyState >= 3) fin(); }, 6000);
+            setTimeout(fin, 25000);   // hard safety so a stuck/very-slow song can never hang the loader forever
           });
         }));
       },
@@ -828,8 +837,16 @@ body.loading{ overflow:hidden; }
         through the finale; the main song resumes when she scrolls back up above the letter. ── */
   (function letterMusic() {
     const letterEl = $('#letter'); if (!letterEl) return;
-    let ticking = false;
-    function pick() { ticking = false; if (musicAPI) musicAPI.setActive(letterEl.getBoundingClientRect().top < window.innerHeight * 0.6 ? 'finale' : 'main'); }
+    let ticking = false, cur = 'main';
+    function pick() {
+      ticking = false;
+      const top = letterEl.getBoundingClientRect().top, ih = window.innerHeight || 1;
+      // hysteresis (dead-band) so a jiggle at the boundary never thrashes the songs on mobile:
+      if (cur !== 'finale' && top < ih * 0.5) cur = 'finale';        // letter is well into view → finale
+      else if (cur !== 'main' && top > ih * 0.72) cur = 'main';      // scrolled back above it → main
+      else return;
+      if (musicAPI) musicAPI.setActive(cur);
+    }
     function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(pick); } }
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
@@ -1175,8 +1192,8 @@ body.loading{ overflow:hidden; }
     if (document.fonts && document.fonts.ready) tasks.push(document.fonts.ready.catch(function () {}));
     tasks = tasks.concat(preloadImages(CONTENT));
     if (musicAPI && musicAPI.ready) {
-      musicAPI.ready(['finale']);                              // buffer the finale song in the background (ready before she reaches the letter)
-      if (!fast) tasks.push(musicAPI.ready(['main']));         // block the reveal on the MAIN song only, so it plays with zero delay
+      if (!fast) tasks.push(musicAPI.ready());   // WAIT for BOTH songs to be ready before revealing the page
+      else musicAPI.ready();                     // editor (#edit): just start buffering, don't make him wait
     }
     var total = tasks.length || 1, done = 0;
     loaderProgress(0.08);
@@ -1184,8 +1201,9 @@ body.loading{ overflow:hidden; }
     await new Promise(function (resolve) {
       var settled = false; function go() { if (settled) return; settled = true; resolve(); }
       Promise.all(tasks).then(function () { loaderProgress(1); go(); });
-      setTimeout(function () { loaderProgress(1); go(); }, fast ? 2200 : 11000); // safety: always reveal
+      setTimeout(function () { loaderProgress(1); go(); }, fast ? 2500 : 27000); // ultimate backstop (just past the per-song cap) so it can never hang forever
     });
+    try { window.scrollTo(0, 0); } catch (e) {}   // reveal at the very top (the hero), every time
     hideLoader();
     if (musicAPI) musicAPI.begin();   // arm autoplay now that audio is buffered → instant on her first gesture
   })();
