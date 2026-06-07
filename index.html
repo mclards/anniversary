@@ -546,7 +546,9 @@ body.loading{ overflow:hidden; }
     function avail(k) { var el = tracks[k]; return !!(el && !broken[k] && el.getAttribute('src')); }
     function effective() { return (activeKey === 'finale' && avail('finale')) ? 'finale' : 'main'; } // no finale song -> keep main playing
     function play(k) { var el = tracks[k]; if (!el || broken[k]) return; if (supports(k)) el.volume = 0; var pr = el.play(); if (pr && pr.catch) pr.catch(function () {}); fadeTo(k, MAX); }
-    function pause(k) { var el = tracks[k]; if (!el) return; fadeTo(k, 0, function () { try { el.pause(); } catch (e) {} }); }
+    // Pause IMMEDIATELY — never wait for a volume fade to finish. On iOS audio.volume is effectively
+    // read-only, so a fade-out interval never reaches 0 and the old song would keep playing (overlap).
+    function pause(k) { clearFade(k); var el = tracks[k]; if (!el) return; try { el.pause(); } catch (e) {} }
     function setUI() { btn.classList.toggle('playing', enabled); btn.setAttribute('aria-pressed', String(enabled)); btn.setAttribute('aria-label', enabled ? 'Pause music' : 'Play music'); icon.textContent = enabled ? '♪' : '♫'; icon.style.opacity = enabled ? '1' : '.6'; }
     function refreshDisabled() { btn.disabled = !(avail('main') || avail('finale')); } // only useless if BOTH songs are missing
     function apply() { var act = effective(); Object.keys(tracks).forEach(function (k) { if (!tracks[k]) return; if (enabled && k === act) play(k); else pause(k); }); setUI(); refreshDisabled(); }
