@@ -526,7 +526,7 @@ img{ max-width:100%; height:auto; display:block; }
   musicAPI = setupMusic();
   function applyMusic(c, autoplay) {
     const m = (c && c.music) || {};
-    if (musicAPI) musicAPI.setSong((m.file && m.file.trim()) || 'audio/song.mp3', m.title, m.artist, autoplay);
+    if (musicAPI) musicAPI.setSong(bust((m.file && m.file.trim()) || 'audio/song.mp3', c && c.rev), m.title, m.artist, autoplay);
   }
 
   /* ── Footer heart: 7-click easter egg ── */
@@ -557,10 +557,16 @@ img{ max-width:100%; height:auto; display:block; }
     if (over) {
       if (over.letter != null) out.letter = over.letter;
       if (over.signature != null) out.signature = over.signature;
+      if (over.rev != null) out.rev = over.rev;
       if (over.music) out.music = Object.assign({}, out.music || {}, over.music);
       if (Array.isArray(over.moments)) over.moments.forEach(function (m, i) { out.moments[i] = Object.assign({}, out.moments[i] || {}, m); });
     }
     return out;
+  }
+  // Cache-bust a repo file URL so a re-published photo/song (same path) refreshes past GitHub's CDN.
+  function bust(path, rev) {
+    if (!path || /^(blob:|data:)/.test(path)) return path;
+    return path + (path.indexOf('?') < 0 ? '?' : '&') + 'v=' + (rev || '1');
   }
   let CONTENT = null;
 
@@ -610,9 +616,8 @@ img{ max-width:100%; height:auto; display:block; }
 
   async function resolveContent() {
     let c = defaults();
-    try { const r = await fetch('content.json', { cache: 'no-store' }); if (r && r.ok) c = merge(c, await r.json()); } catch (e) {}
-    const local = loadLocal(); if (local) c = merge(c, local);
-    return c;
+    try { const r = await fetch('content.json?_=' + Date.now(), { cache: 'no-store' }); if (r && r.ok) c = merge(c, await r.json()); } catch (e) {}
+    return c;   // the page ALWAYS shows what's published on GitHub (or the baked-in defaults) — never a device's local copy
   }
 
   function photoFallback(box, img) {
@@ -634,7 +639,7 @@ img{ max-width:100%; height:auto; display:block; }
       const photo = document.createElement('div'); photo.className = 'moment-photo';
       photo.setAttribute('data-title', m.title || ''); photo.setAttribute('data-unit', 'Moment ' + (i + 1));
       const img = document.createElement('img');
-      img.src = (previewMap && previewMap[i]) || m.photo || ('photos/moment' + (i + 1) + '.jpg');
+      img.src = (previewMap && previewMap[i]) || bust(m.photo || ('photos/moment' + (i + 1) + '.jpg'), c.rev);
       img.alt = m.title || ('Moment ' + (i + 1)); img.loading = 'lazy';
       img.addEventListener('error', function () { photoFallback(photo, img); });
       photo.appendChild(img);
@@ -743,6 +748,13 @@ img{ max-width:100%; height:auto; display:block; }
     function buildForm() {
       DRAFT = clone(CONTENT);
       clearPending();
+      // Editor-only safety net: restore THIS device's unsaved draft if it's newer than what's
+      // published — so you don't lose unsaved typing. This never changes what visitors see.
+      const localDraft = loadLocal();
+      if (localDraft && Number(localDraft.rev || 0) > Number((CONTENT && CONTENT.rev) || 0)) {
+        DRAFT = merge(CONTENT, localDraft);
+        setTimeout(function () { toast('Restored your unpublished draft — Publish to save it'); }, 500);
+      }
       body.innerHTML = '';
       const intro = document.createElement('p'); intro.className = 'admin-intro';
       intro.innerHTML = 'Edit anything below, then tap <b>Save</b> to preview it here. When it looks right, tap <b>Publish</b> to make it live for her. Photos &amp; the song upload only when you Publish.';
@@ -875,6 +887,7 @@ img{ max-width:100%; height:auto; display:block; }
       if (!DRAFT.music) DRAFT.music = {};
       if ($('#am-song-title')) DRAFT.music.title = $('#am-song-title').value;
       if ($('#am-song-artist')) DRAFT.music.artist = $('#am-song-artist').value;
+      DRAFT.rev = Date.now();   // mark this edit as the newest — wins across devices + busts caches
     }
     async function publishToGitHub() {
       const c = ghCfgFromForm();
