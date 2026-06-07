@@ -112,6 +112,19 @@ img{ max-width:100%; height:auto; display:block; }
 .moment-photo.missing::before{ content:"❤"; position:absolute; font-size:60px; color:rgba(232,160,176,.16); top:28%; left:50%; transform:translateX(-50%); }
 .missing-label{ position:relative; z-index:1; font-family:var(--serif); font-size:22px; color:var(--text); }
 .missing-label small{ display:block; margin-top:8px; font-family:var(--sans); font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); }
+/* Collage: 2–4 photos auto-laid-out inside one moment's photo panel (seamless, no gaps) */
+.moment-photo.collage{ display:grid; gap:0; }
+.moment-photo.c2{ grid-template-columns:1fr 1fr; }
+.moment-photo.c3{ grid-template-columns:1.35fr 1fr; grid-template-rows:1fr 1fr; }
+.moment-photo.c3 .mphoto:first-child{ grid-row:1 / span 2; }
+.moment-photo.c4{ grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; }
+.moment-photo.collage .mphoto{ position:relative; overflow:hidden; min-height:0; }
+.moment-photo.collage .mphoto img{ width:100%; height:100%; min-height:0; object-fit:cover; display:block; transition:transform .4s ease; }
+.moment-photo.collage:hover img{ transform:none; box-shadow:none; }
+.moment-photo.collage .mphoto:hover img{ transform:scale(1.04); }
+.moment-photo.collage .mphoto.missing{ display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(120% 90% at 50% 40%, rgba(139,26,74,.35), transparent 70%), linear-gradient(160deg, var(--bg-deep), var(--bg-card)); }
+.moment-photo.collage .mphoto.missing::before{ content:"❤"; font-size:34px; color:rgba(232,160,176,.22); }
 .moment-text{ position:relative; padding:36px 38px; display:flex; flex-direction:column; justify-content:center; }
 .moment-text::after{ content:counter(moment,decimal-leading-zero); position:absolute; top:14px; right:18px; font-family:var(--serif); font-weight:700; font-size:42px; line-height:1; color:rgba(201,150,58,.10); pointer-events:none; }
 .moment-date{ font-family:var(--sans); font-weight:400; font-size:12px; text-transform:uppercase; letter-spacing:2px; color:var(--gold); margin:0 0 12px; }
@@ -198,14 +211,19 @@ img{ max-width:100%; height:auto; display:block; }
 .admin-body{ flex:1; overflow-y:auto; padding:22px 22px; -webkit-overflow-scrolling:touch; }
 .admin-moment{ border:1px solid var(--border); border-radius:14px; padding:20px 18px; margin-bottom:24px; background:rgba(0,0,0,.15); }
 .admin-moment h4{ margin:0 0 12px; font-family:var(--serif); color:var(--gold); font-size:15px; letter-spacing:1px; text-transform:uppercase; }
-.admin-photo{ display:flex; gap:14px; align-items:center; margin-bottom:18px; }
-.admin-thumb{ width:84px; height:64px; object-fit:cover; border-radius:8px; border:1px solid var(--border); background:var(--bg-deep); flex:none; }
 .admin-upload{ display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:14px; font-weight:700; color:var(--gold); background:rgba(201,150,58,.12); border:1px solid var(--gold); border-radius:10px; padding:12px 14px; cursor:pointer; text-align:center; min-height:44px; transition:background .2s ease; }
 .admin-upload:hover{ background:rgba(201,150,58,.22); }
 .admin-upload input{ display:none; }
-.admin-photo-side{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
-.am-photo-status{ font-size:11px; color:var(--muted); }
-.admin-thumb{ cursor:default; }
+/* Per-moment photo gallery (up to 4, collage on the live page) */
+.am-photos{ display:flex; flex-wrap:wrap; gap:10px; margin:0 0 16px; }
+.am-pcell{ position:relative; width:88px; height:66px; border-radius:8px; overflow:hidden; border:1px solid var(--border); background:var(--bg-deep); flex:none; }
+.am-pthumb{ width:100%; height:100%; object-fit:cover; display:block; }
+.admin-panel .am-prm{ position:absolute; top:3px; right:3px; width:22px; height:22px; min-height:0; padding:0; border:none; border-radius:50%; background:rgba(0,0,0,.62); color:#fff; font-size:15px; line-height:1; cursor:pointer; flex:none; display:flex; align-items:center; justify-content:center; }
+.admin-panel .am-prm:hover{ background:rgba(180,30,60,.95); }
+.am-padd{ width:88px; height:66px; display:flex; align-items:center; justify-content:center; font-size:28px; color:var(--gold); background:rgba(201,150,58,.12); border:1px dashed var(--gold); border-radius:8px; cursor:pointer; flex:none; transition:background .2s ease; }
+.am-padd:hover{ background:rgba(201,150,58,.22); }
+.am-padd input{ display:none; }
+.am-photo-status{ display:block; font-size:11.5px; color:var(--muted); margin:0 0 8px; }
 .admin-panel label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin:16px 0 6px; }
 .admin-panel input[type=text], .admin-panel input[type=password], .admin-panel textarea{ width:100%; padding:14px 15px; border-radius:9px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text); font-family:var(--sans); font-size:16px; line-height:1.55; resize:vertical; }
 .admin-panel textarea{ min-height:120px; }
@@ -252,8 +270,7 @@ img{ max-width:100%; height:auto; display:block; }
   .am-caption{ min-height:150px; }
   #admin-letter-text{ min-height:280px; }
   .admin-upload{ padding:15px; min-height:50px; width:100%; }
-  .admin-photo{ flex-direction:column; align-items:stretch; }
-  .admin-thumb{ width:100%; height:160px; }
+  .am-pcell, .am-padd{ width:104px; height:78px; }
   .admin-panel button{ min-height:50px; font-size:15px; }
   .admin-foot{ flex-direction:column; }
   .admin-foot.mini{ flex-direction:row; }
@@ -675,6 +692,15 @@ body.loading{ overflow:hidden; }
     if (!path || /^(blob:|data:)/.test(path)) return path;
     return path + (path.indexOf('?') < 0 ? '?' : '&') + 'v=' + (rev || '1');
   }
+  // A moment shows 1–4 photos. New format = `photos` array; old format = single `photo`.
+  // Empty/absent → one default placeholder (which the page renders as the "add your photo" card).
+  function momentPhotos(m, i) {
+    let arr = [];
+    if (m && Array.isArray(m.photos)) arr = m.photos.filter(function (p) { return !!p; }).slice(0, 4);
+    if (!arr.length && m && m.photo) arr = [m.photo];
+    if (!arr.length) arr = ['photos/moment' + (i + 1) + '.jpg'];
+    return arr;
+  }
   let CONTENT = null;
 
   // ── GitHub publish helpers (token stored only in this browser) ──
@@ -754,11 +780,25 @@ body.loading{ overflow:hidden; }
       art.className = 'moment reveal ' + (alt ? 'alt from-right' : 'from-left') + (revealed ? ' visible' : '');
       const photo = document.createElement('div'); photo.className = 'moment-photo';
       photo.setAttribute('data-title', m.title || ''); photo.setAttribute('data-unit', 'Moment ' + (i + 1));
-      const img = document.createElement('img');
-      img.src = (previewMap && previewMap[i]) || bust(m.photo || ('photos/moment' + (i + 1) + '.jpg'), c.rev);
-      img.alt = m.title || ('Moment ' + (i + 1)); img.loading = 'lazy';
-      img.addEventListener('error', function () { photoFallback(photo, img); });
-      photo.appendChild(img);
+      const pics = momentPhotos(m, i);
+      if (pics.length > 1) {
+        // Collage: auto-layout 2/3/4 photos (class c2/c3/c4 picks the best arrangement in CSS).
+        photo.classList.add('collage', 'c' + pics.length);
+        pics.forEach(function (src, pi) {
+          const cell = document.createElement('div'); cell.className = 'mphoto';
+          const cimg = document.createElement('img');
+          cimg.src = (previewMap && previewMap[src]) || bust(src, c.rev);
+          cimg.alt = (m.title || ('Moment ' + (i + 1))) + ' — ' + (pi + 1); cimg.loading = 'lazy';
+          cimg.addEventListener('error', function () { cell.classList.add('missing'); if (cimg.parentElement) cimg.remove(); });
+          cell.appendChild(cimg); photo.appendChild(cell);
+        });
+      } else {
+        const img = document.createElement('img');
+        img.src = (previewMap && previewMap[pics[0]]) || bust(pics[0], c.rev);
+        img.alt = m.title || ('Moment ' + (i + 1)); img.loading = 'lazy';
+        img.addEventListener('error', function () { photoFallback(photo, img); });
+        photo.appendChild(img);
+      }
       const text = document.createElement('div'); text.className = 'moment-text';
       const dt = document.createElement('p'); dt.className = 'moment-date'; dt.textContent = m.date || '';
       const ti = document.createElement('h3'); ti.className = 'moment-title'; ti.textContent = m.title || '';
@@ -882,8 +922,8 @@ body.loading{ overflow:hidden; }
   function setupAdmin() {
     const gate = $('#admin-gate'), panel = $('#admin-panel'), body = $('#admin-body');
     let DRAFT = null;
-    let pendingFiles = {};   // i -> {base64, path, size}  (new photo originals to commit)
-    let previewUrls = {};    // i -> object URL for in-session preview
+    let pendingFiles = {};   // path -> {base64, path, size}  (new photo originals to commit)
+    let previewUrls = {};    // path -> object URL for in-session preview
     let pendingAudio = null;   // {base64, path, size} new MAIN song to commit
     let pendingAudio2 = null;  // {base64, path, size} new FINALE song to commit
     let audioPreviewUrl = null, audioPreviewUrl2 = null;
@@ -892,6 +932,53 @@ body.loading{ overflow:hidden; }
       if (audioPreviewUrl) { try { URL.revokeObjectURL(audioPreviewUrl); } catch (e) {} }
       if (audioPreviewUrl2) { try { URL.revokeObjectURL(audioPreviewUrl2); } catch (e) {} }
       pendingFiles = {}; previewUrls = {}; pendingAudio = null; pendingAudio2 = null; audioPreviewUrl = null; audioPreviewUrl2 = null;
+    }
+
+    function updatePhotoStatus(sec, i) {
+      const st = $('.am-photo-status', sec); if (!st) return;
+      const n = (DRAFT.moments[i].photos || []).length;
+      st.textContent = !n ? 'No photo yet — add up to 4 (a placeholder shows until you do).'
+        : n + ' photo' + (n > 1 ? 's' : '') + (n < 4 ? ' · add up to ' + (4 - n) + ' more for a collage.' : ' · maximum reached.');
+    }
+    // Re-draw a moment's photo gallery (thumbnails + remove buttons + an "add" tile up to 4).
+    function renderPhotoEditor(sec, i) {
+      const host = $('.am-photos', sec); if (!host) return;
+      host.innerHTML = '';
+      const pics = DRAFT.moments[i].photos || (DRAFT.moments[i].photos = []);
+      pics.forEach(function (src, pi) {
+        const cell = document.createElement('div'); cell.className = 'am-pcell';
+        const img = document.createElement('img'); img.className = 'am-pthumb'; img.alt = '';
+        img.src = previewUrls[src] || bust(src, (DRAFT.rev || (CONTENT && CONTENT.rev)));
+        cell.appendChild(img);
+        const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'am-prm'; rm.title = 'Remove photo'; rm.setAttribute('aria-label', 'Remove photo'); rm.textContent = '×';
+        rm.addEventListener('click', function () {
+          pics.splice(pi, 1);
+          if (pendingFiles[src]) delete pendingFiles[src];
+          if (previewUrls[src]) { try { URL.revokeObjectURL(previewUrls[src]); } catch (e) {} delete previewUrls[src]; }
+          renderPhotoEditor(sec, i); updatePhotoStatus(sec, i);
+        });
+        cell.appendChild(rm);
+        host.appendChild(cell);
+      });
+      if (pics.length < 4) {
+        const add = document.createElement('label'); add.className = 'am-padd'; add.title = 'Add a photo';
+        add.innerHTML = '＋<input type="file" accept="image/*">';
+        $('input', add).addEventListener('change', function (e) {
+          const f = e.target.files && e.target.files[0]; if (!f) return;
+          let ext = (f.name.split('.').pop() || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (['jpg', 'jpeg', 'png', 'webp', 'gif'].indexOf(ext) < 0) ext = 'jpg';
+          const path = 'photos/moment' + (i + 1) + '-' + uid() + '.' + ext;   // unique name per upload -> no stale cache
+          readFileBase64(f).then(function (b64) {
+            pendingFiles[path] = { base64: b64, path: path, size: f.size };
+            previewUrls[path] = URL.createObjectURL(f);
+            pics.push(path);
+            renderPhotoEditor(sec, i); updatePhotoStatus(sec, i);
+            toast('Photo ready (' + Math.round(f.size / 1024) + ' KB) — Publish to upload', true);
+          }).catch(function () { toast('Could not read that file'); });
+        });
+        host.appendChild(add);
+      }
+      updatePhotoStatus(sec, i);
     }
 
     function openGate() { $('#admin-err').hidden = true; gate.hidden = false; setTimeout(function () { $('#admin-code').focus(); }, 50); }
@@ -919,38 +1006,26 @@ body.loading{ overflow:hidden; }
         const sec = document.createElement('details'); sec.className = 'admin-moment'; sec.open = true; sec.dataset.i = i;
         sec.innerHTML =
           '<summary></summary>' +
-          '<div class="admin-photo"><img class="admin-thumb" alt=""><div class="admin-photo-side"><label class="admin-upload">＋ Add / change photo<input type="file" accept="image/*"></label><small class="am-photo-status"></small></div></div>' +
+          '<label>Photos (up to 4 — they auto-arrange into a collage)</label>' +
+          '<small class="am-photo-status"></small>' +
+          '<div class="am-photos"></div>' +
           '<label>Date</label><input type="text" class="am-date" placeholder="e.g. June 2025">' +
           '<label>Title</label><input type="text" class="am-title" placeholder="a short title">' +
           '<label>Story / message</label><textarea class="am-caption" rows="4" placeholder="what happened — in your words"></textarea>';
         body.appendChild(sec);
         const sumEl = $('summary', sec);
         const setSum = function () { const t = ($('.am-title', sec).value || '').trim(); sumEl.textContent = 'Moment ' + (i + 1) + (t ? ' — ' + (t.length > 24 ? t.slice(0, 24) + '…' : t) : ''); };
-        const isDefault = !m.photo || m.photo === ('photos/moment' + (i + 1) + '.jpg');
-        $('.am-photo-status', sec).textContent = isDefault ? 'Using a placeholder — add your photo' : 'Your photo is set';
-        $('.admin-thumb', sec).src = m.photo || ('photos/moment' + (i + 1) + '.jpg');
+        // Normalise to an editable photo array; drop default placeholders so they show as "empty".
+        let pics = [];
+        if (Array.isArray(m.photos)) pics = m.photos.filter(function (p) { return !!p; }).slice(0, 4);
+        else if (m.photo && m.photo !== ('photos/moment' + (i + 1) + '.jpg')) pics = [m.photo];
+        DRAFT.moments[i].photos = pics; delete DRAFT.moments[i].photo;
         $('.am-date', sec).value = m.date || '';
         $('.am-title', sec).value = m.title || '';
         $('.am-caption', sec).value = m.caption || '';
         setSum();
         $('.am-title', sec).addEventListener('input', setSum);
-        $('.admin-upload input', sec).addEventListener('change', function (e) {
-          const f = e.target.files && e.target.files[0]; if (!f) return;
-          let ext = (f.name.split('.').pop() || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-          if (['jpg', 'jpeg', 'png', 'webp', 'gif'].indexOf(ext) < 0) ext = 'jpg';
-          const path = 'photos/moment' + (i + 1) + '-' + uid() + '.' + ext;   // unique name per upload -> no stale cache
-          readFileBase64(f).then(function (b64) {
-            pendingFiles[i] = { base64: b64, path: path, size: f.size };
-            DRAFT.moments[i].photo = path;                 // content.json keeps a path, not the image
-            if (previewUrls[i]) { try { URL.revokeObjectURL(previewUrls[i]); } catch (e) {} }
-            previewUrls[i] = URL.createObjectURL(f);
-            const th = $('.admin-thumb', sec);
-            th.onerror = function () { toast('Cannot preview this format — JPG/PNG works best'); };
-            th.src = previewUrls[i];
-            const st = $('.am-photo-status', sec); if (st) st.textContent = '✓ New photo ready — Publish to upload';
-            toast('Original ready (' + Math.round(f.size / 1024) + ' KB) — Publish to upload', true);
-          }).catch(function () { toast('Could not read that file'); });
-        });
+        renderPhotoEditor(sec, i);
       });
       const lt = document.createElement('section'); lt.className = 'admin-letter';
       lt.innerHTML = '<label>Letter</label><textarea id="admin-letter-text" rows="11"></textarea><label>Signature</label><input type="text" id="admin-sign">';
@@ -1078,8 +1153,13 @@ body.loading{ overflow:hidden; }
           if (oldPath && oldPath !== newPath && oldPath !== keep && /^(photos|audio)\//.test(oldPath) && deletions.indexOf(oldPath) < 0) deletions.push(oldPath);
         }
         if (oldContent) {
-          (DRAFT.moments || []).forEach(function (m, i) {
-            if (pendingFiles[i] && oldContent.moments && oldContent.moments[i]) markDelete(oldContent.moments[i].photo, m.photo, 'photos/moment' + (i + 1) + '.jpg');
+          // Build the set of photos we're keeping, then delete any old photo no longer referenced.
+          const keepSet = {};
+          (DRAFT.moments || []).forEach(function (m, i) { momentPhotos(m, i).forEach(function (p) { keepSet[p] = 1; }); });
+          (oldContent.moments || []).forEach(function (m, i) {
+            momentPhotos(m, i).forEach(function (p) {
+              if (p && !keepSet[p] && p !== ('photos/moment' + (i + 1) + '.jpg') && /^photos\//.test(p) && deletions.indexOf(p) < 0) deletions.push(p);
+            });
           });
           if (pendingAudio && oldContent.music) markDelete(oldContent.music.file, DRAFT.music.file, 'audio/song.mp3');
           if (pendingAudio2 && oldContent.music2) markDelete(oldContent.music2.file, DRAFT.music2.file, 'audio/song2.mp3');
@@ -1187,8 +1267,10 @@ body.loading{ overflow:hidden; }
   function loaderProgress(p) { var f = document.getElementById('loader-fill'); if (f) f.style.width = Math.round(Math.max(0, Math.min(1, p)) * 100) + '%'; }
   function hideLoader() { document.body.classList.remove('loading'); document.body.classList.add('loaded'); setTimeout(function () { var l = document.getElementById('loader'); if (l && l.parentNode) l.parentNode.removeChild(l); }, 700); }
   function preloadImages(c) {
-    return (c.moments || []).map(function (m, i) {
-      return new Promise(function (res) { var im = new Image(); var done = false; function fin() { if (done) return; done = true; res(); } im.onload = fin; im.onerror = fin; im.src = bust(m.photo || ('photos/moment' + (i + 1) + '.jpg'), c.rev); setTimeout(fin, 8000); });
+    var srcs = [];
+    (c.moments || []).forEach(function (m, i) { momentPhotos(m, i).forEach(function (p) { srcs.push(bust(p, c.rev)); }); });
+    return srcs.map(function (src) {
+      return new Promise(function (res) { var im = new Image(); var done = false; function fin() { if (done) return; done = true; res(); } im.onload = fin; im.onerror = fin; im.src = src; setTimeout(fin, 8000); });
     });
   }
   (async function init() {
