@@ -116,7 +116,9 @@ img{ max-width:100%; height:auto; display:block; }
 .moment-text::after{ content:counter(moment,decimal-leading-zero); position:absolute; top:14px; right:18px; font-family:var(--serif); font-weight:700; font-size:42px; line-height:1; color:rgba(201,150,58,.10); pointer-events:none; }
 .moment-date{ font-family:var(--sans); font-weight:400; font-size:12px; text-transform:uppercase; letter-spacing:2px; color:var(--gold); margin:0 0 12px; }
 .moment-title{ font-family:var(--serif); font-weight:700; font-size:28px; color:var(--text); margin:0 0 14px; line-height:1.2; letter-spacing:.3px; text-wrap:balance; }
-.moment-caption{ font-family:var(--sans); font-weight:300; font-size:16px; color:var(--muted); line-height:1.7; margin:0; text-wrap:pretty; }
+.moment-caption{ font-family:var(--sans); font-weight:300; font-size:16px; color:var(--muted); }
+.moment-para{ margin:0 0 .9em; line-height:1.7; text-align:justify; text-justify:inter-word; hyphens:auto; -webkit-hyphens:auto; text-wrap:pretty; }
+.moment-para:last-child{ margin-bottom:0; }
 .moment .moment-photo{ order:1; } .moment .moment-text{ order:2; }
 .moment.alt .moment-photo{ order:2; } .moment.alt .moment-text{ order:1; }
 
@@ -193,10 +195,10 @@ img{ max-width:100%; height:auto; display:block; }
 .admin-panel.open{ transform:translateX(0); }
 .admin-head{ display:flex; align-items:center; justify-content:space-between; padding:calc(16px + env(safe-area-inset-top)) 20px 16px; border-bottom:1px solid var(--border); }
 .admin-head strong{ font-family:var(--serif); color:var(--blush); font-size:18px; }
-.admin-body{ flex:1; overflow-y:auto; padding:18px 20px; -webkit-overflow-scrolling:touch; }
-.admin-moment{ border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:18px; background:rgba(0,0,0,.15); }
+.admin-body{ flex:1; overflow-y:auto; padding:22px 22px; -webkit-overflow-scrolling:touch; }
+.admin-moment{ border:1px solid var(--border); border-radius:14px; padding:20px 18px; margin-bottom:24px; background:rgba(0,0,0,.15); }
 .admin-moment h4{ margin:0 0 12px; font-family:var(--serif); color:var(--gold); font-size:15px; letter-spacing:1px; text-transform:uppercase; }
-.admin-photo{ display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+.admin-photo{ display:flex; gap:14px; align-items:center; margin-bottom:18px; }
 .admin-thumb{ width:84px; height:64px; object-fit:cover; border-radius:8px; border:1px solid var(--border); background:var(--bg-deep); flex:none; }
 .admin-upload{ display:inline-flex; align-items:center; justify-content:center; gap:6px; font-size:14px; font-weight:700; color:var(--gold); background:rgba(201,150,58,.12); border:1px solid var(--gold); border-radius:10px; padding:12px 14px; cursor:pointer; text-align:center; min-height:44px; transition:background .2s ease; }
 .admin-upload:hover{ background:rgba(201,150,58,.22); }
@@ -204,10 +206,13 @@ img{ max-width:100%; height:auto; display:block; }
 .admin-photo-side{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
 .am-photo-status{ font-size:11px; color:var(--muted); }
 .admin-thumb{ cursor:default; }
-.admin-panel label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin:12px 0 5px; }
-.admin-panel input[type=text], .admin-panel input[type=password], .admin-panel textarea{ width:100%; padding:12px 14px; border-radius:8px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text); font-family:var(--sans); font-size:16px; resize:vertical; }
-.admin-letter{ border-top:1px solid var(--border); padding-top:8px; }
-.admin-foot{ display:flex; flex-wrap:wrap; gap:8px; padding:14px 20px calc(14px + env(safe-area-inset-bottom)); border-top:1px solid var(--border); }
+.admin-panel label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin:16px 0 6px; }
+.admin-panel input[type=text], .admin-panel input[type=password], .admin-panel textarea{ width:100%; padding:14px 15px; border-radius:9px; border:1px solid var(--border); background:var(--bg-deep); color:var(--text); font-family:var(--sans); font-size:16px; line-height:1.55; resize:vertical; }
+.admin-panel textarea{ min-height:120px; }
+.am-caption{ min-height:130px; }
+#admin-letter-text{ min-height:230px; }
+.admin-letter{ border-top:1px solid var(--border); padding-top:22px; margin-top:10px; }
+.admin-foot{ display:flex; flex-wrap:wrap; gap:10px; padding:16px 20px calc(16px + env(safe-area-inset-bottom)); border-top:1px solid var(--border); }
 .admin-panel button{ font-family:var(--sans); font-size:14px; padding:11px 14px; border-radius:9px; border:1px solid var(--border); background:var(--bg-card); color:var(--text); cursor:pointer; flex:1; }
 .admin-panel button.primary{ background:var(--gold); color:var(--bg-deep); border-color:var(--gold); font-weight:700; }
 .admin-panel button.danger{ color:#E8A0B0; }
@@ -219,7 +224,7 @@ img{ max-width:100%; height:auto; display:block; }
 .admin-toast.ok{ background:#2e8b57; color:#fff; }
 .admin-intro{ font-size:12.5px; color:var(--muted); line-height:1.6; margin:0 0 16px; padding:11px 13px; border:1px solid var(--border); border-radius:9px; background:rgba(201,150,58,.06); }
 .admin-group-head{ font-family:var(--sans); font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin:2px 0 12px; }
-.admin-moment > summary{ cursor:pointer; list-style:none; font-family:var(--serif); color:var(--gold); font-size:15px; letter-spacing:1px; text-transform:uppercase; padding:2px 0 12px; }
+.admin-moment > summary{ cursor:pointer; list-style:none; font-family:var(--serif); color:var(--gold); font-size:16px; letter-spacing:1px; text-transform:uppercase; padding:4px 0 16px; }
 .admin-moment > summary::-webkit-details-marker{ display:none; }
 .admin-moment > summary::after{ content:'▾'; float:right; opacity:.6; text-transform:none; }
 .admin-moment[open] > summary::after{ content:'▴'; }
@@ -240,10 +245,19 @@ img{ max-width:100%; height:auto; display:block; }
 .admin-foot.mini{ padding-top:0; }
 .admin-foot.mini button{ flex:1; font-size:12.5px; min-height:0; padding:9px 12px; color:var(--muted); }
 @media (max-width:600px){
-  .admin-body{ padding:16px 16px; }
-  .admin-panel button{ min-height:48px; }
+  .admin-body{ padding:22px 18px; }
+  .admin-moment{ padding:22px 18px; margin-bottom:26px; }
+  .admin-panel label{ font-size:13px; margin:20px 0 8px; }
+  .admin-panel input[type=text], .admin-panel input[type=password], .admin-panel textarea{ padding:15px 16px; }
+  .am-caption{ min-height:150px; }
+  #admin-letter-text{ min-height:280px; }
+  .admin-upload{ padding:15px; min-height:50px; width:100%; }
+  .admin-photo{ flex-direction:column; align-items:stretch; }
+  .admin-thumb{ width:100%; height:160px; }
+  .admin-panel button{ min-height:50px; font-size:15px; }
   .admin-foot{ flex-direction:column; }
   .admin-foot.mini{ flex-direction:row; }
+  .admin-moment > summary{ font-size:17px; padding:6px 0 18px; }
 }
 
 /* ════ RESPONSIVE ════ */
@@ -392,7 +406,6 @@ img{ max-width:100%; height:auto; display:block; }
     <button id="admin-export" type="button">Download .json</button>
     <button id="admin-reset" class="danger" type="button">Reset</button>
   </div>
-  <p class="admin-note">Publish sends your text, photos &amp; song to GitHub in one commit (live in ~1 min). No token yet? Open <b>Publish setup</b> above. No token at all? <b>Download .json</b> also downloads any new photos/song to commit yourself.</p>
 </aside>
 <div class="admin-toast" id="admin-toast" role="status"></div>
 
@@ -597,6 +610,14 @@ img{ max-width:100%; height:auto; display:block; }
     for (let i = 0; i < bytes.length; i += chunk) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
     return btoa(bin);
   }
+  function b64ToUtf8(b64) {
+    const bin = atob((b64 || '').replace(/\s/g, ''));
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+  // unique token so every uploaded file gets a NEW filename → a cache can never serve an old image
+  function uid() { return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); }
   async function ghApi(url, opts) {
     let res;
     try { res = await fetch('https://api.github.com' + url, opts); }
@@ -663,7 +684,13 @@ img{ max-width:100%; height:auto; display:block; }
       const text = document.createElement('div'); text.className = 'moment-text';
       const dt = document.createElement('p'); dt.className = 'moment-date'; dt.textContent = m.date || '';
       const ti = document.createElement('h3'); ti.className = 'moment-title'; ti.textContent = m.title || '';
-      const cap = document.createElement('p'); cap.className = 'moment-caption'; cap.textContent = m.caption || '';
+      const cap = document.createElement('div'); cap.className = 'moment-caption';
+      String(m.caption || '').split(/\n\s*\n+/).forEach(function (para) {   // blank line = new paragraph
+        const txt = para.replace(/\s*\n\s*/g, ' ').trim();                  // soft-wrap single newlines within a paragraph
+        if (!txt) return;
+        const p = document.createElement('p'); p.className = 'moment-para'; p.textContent = txt;
+        cap.appendChild(p);
+      });
       text.appendChild(dt); text.appendChild(ti); text.appendChild(cap);
       art.appendChild(photo); art.appendChild(text);
       host.appendChild(art);
@@ -783,9 +810,6 @@ img{ max-width:100%; height:auto; display:block; }
         setTimeout(function () { toast('Restored your unpublished draft — Publish to save it'); }, 500);
       }
       body.innerHTML = '';
-      const intro = document.createElement('p'); intro.className = 'admin-intro';
-      intro.innerHTML = 'Edit anything below, then tap <b>Save</b> to preview it here. When it looks right, tap <b>Publish</b> to make it live for her. Photos &amp; the song upload only when you Publish.';
-      body.appendChild(intro);
       const ghead = document.createElement('p'); ghead.className = 'admin-group-head'; ghead.textContent = 'Your moments';
       body.appendChild(ghead);
       DRAFT.moments.forEach(function (m, i) {
@@ -811,7 +835,7 @@ img{ max-width:100%; height:auto; display:block; }
           const f = e.target.files && e.target.files[0]; if (!f) return;
           let ext = (f.name.split('.').pop() || '').toLowerCase().replace(/[^a-z0-9]/g, '');
           if (['jpg', 'jpeg', 'png', 'webp', 'gif'].indexOf(ext) < 0) ext = 'jpg';
-          const path = 'photos/moment' + (i + 1) + '.' + ext;
+          const path = 'photos/moment' + (i + 1) + '-' + uid() + '.' + ext;   // unique name per upload -> no stale cache
           readFileBase64(f).then(function (b64) {
             pendingFiles[i] = { base64: b64, path: path, size: f.size };
             DRAFT.moments[i].photo = path;                 // content.json keeps a path, not the image
@@ -849,7 +873,7 @@ img{ max-width:100%; height:auto; display:block; }
         let ext = (f.name.split('.').pop() || '').toLowerCase().replace(/[^a-z0-9]/g, '');
         if (['mp3', 'm4a', 'aac', 'ogg', 'wav'].indexOf(ext) < 0) ext = 'mp3';
         readFileBase64(f).then(function (b64) {
-          pendingAudio = { base64: b64, path: 'audio/song.' + ext, size: f.size };
+          pendingAudio = { base64: b64, path: 'audio/song-' + uid() + '.' + ext, size: f.size };
           DRAFT.music.file = pendingAudio.path;
           if (audioPreviewUrl) { try { URL.revokeObjectURL(audioPreviewUrl); } catch (e) {} }
           audioPreviewUrl = URL.createObjectURL(f);
@@ -931,6 +955,22 @@ img{ max-width:100%; height:auto; display:block; }
         if (!(repoInfo && repoInfo.permissions && repoInfo.permissions.push)) {
           throw Object.assign(new Error('no write'), { status: 403 });
         }
+        // 1b) Read what's currently published so we can DELETE the files we're replacing (no stale leftovers).
+        let oldContent = null;
+        try {
+          const cj = await ghApi(base + '/contents/content.json?ref=' + encodeURIComponent(c.branch), { headers: H });
+          if (cj && cj.content) oldContent = JSON.parse(b64ToUtf8(cj.content));
+        } catch (e) { if (e && e.status !== 404) { try { console.warn('Could not read published content.json for cleanup:', e.message); } catch (_) {} } }
+        const deletions = [];
+        function markDelete(oldPath, newPath, keep) {
+          if (oldPath && oldPath !== newPath && oldPath !== keep && /^(photos|audio)\//.test(oldPath) && deletions.indexOf(oldPath) < 0) deletions.push(oldPath);
+        }
+        if (oldContent) {
+          (DRAFT.moments || []).forEach(function (m, i) {
+            if (pendingFiles[i] && oldContent.moments && oldContent.moments[i]) markDelete(oldContent.moments[i].photo, m.photo, 'photos/moment' + (i + 1) + '.jpg');
+          });
+          if (pendingAudio && oldContent.music) markDelete(oldContent.music.file, DRAFT.music.file, 'audio/song.mp3');
+        }
         // 2) Create every blob once (content.json + new photos + new song). Blob shas are reusable across retries.
         const treeItems = [{ path: 'content.json', mode: '100644', type: 'blob', sha: (await ghApi(base + '/git/blobs', { method: 'POST', headers: H, body: JSON.stringify({ content: utf8ToB64(json), encoding: 'base64' }) })).sha }];
         const idxs = Object.keys(pendingFiles);
@@ -961,6 +1001,16 @@ img{ max-width:100%; height:auto; display:block; }
         const map = previewUrls; pendingFiles = {}; pendingAudio = null;
         renderTimeline(CONTENT, true, map); setLetterStatic(CONTENT);
         toast('✓ Published! Live in ~1 min', true);
+        // Best-effort cleanup: delete the files we replaced. Publish already succeeded, so any
+        // failure here is harmless (unique filenames mean the old file is never shown anyway).
+        for (var di = 0; di < deletions.length; di++) {
+          var dp = deletions[di];
+          try {
+            var ep = dp.split('/').map(encodeURIComponent).join('/');
+            var meta = await ghApi(base + '/contents/' + ep + '?ref=' + encodeURIComponent(c.branch), { headers: H });
+            if (meta && meta.sha) await ghApi(base + '/contents/' + ep, { method: 'DELETE', headers: H, body: JSON.stringify({ message: 'Remove replaced ' + dp, sha: meta.sha, branch: c.branch }) });
+          } catch (e) { /* leave the orphan — it is never referenced */ }
+        }
       } catch (e) {
         toast('Publish failed — ' + ghError(e));
       } finally {
