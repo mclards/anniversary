@@ -549,8 +549,10 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
 
   const CONFETTI_COLORS = ['#C9963A', '#E8A0B0', '#E8E0F0', '#8B1A4A'];
   function burst() {
-    if (REDUCED || typeof confetti !== 'function') return;
-    confetti({ particleCount: 180, spread: 100, origin: { y: 0.4 }, colors: CONFETTI_COLORS });
+    // The finale burst is the emotional payoff, so it fires on mobile too. (It's a one-shot celebration, not
+    // continuous motion — and some mobile/in-app web views falsely report prefers-reduced-motion.)
+    if (typeof confetti !== 'function') return;
+    confetti({ particleCount: REDUCED ? 110 : 180, spread: 100, origin: { y: 0.4 }, colors: CONFETTI_COLORS });
   }
 
   /* ── Particles ── */
@@ -916,11 +918,16 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
     const out = $('#letter-text'), cursor = $('#cursor'), sign = $('#letter-sign');
     sign.textContent = c.signature || '';
     const text = (c.letter || '').replace(/\r/g, '');
+    // Split by code points (not UTF-16 units) so emoji/surrogate pairs type as one glyph — never a broken half-char.
+    const chars = Array.from(text);
+    // Adaptive cadence: a long letter at a fixed per-char speed would crawl for ~a minute. Scale the speed so the
+    // whole letter lands in a comfortable window, clamped so short notes still feel like a real typewriter.
+    const speed = Math.max(16, Math.min(42, Math.round(24000 / Math.max(chars.length, 1))));
     const host = $('#letter');
     function finish() { cursor.hidden = true; sign.classList.add('show'); }
     // The typewriter is the letter's whole feeling, so it runs everywhere — including mobile/in-app web
     // views that report prefers-reduced-motion. It's just text appearing, with no movement to trigger motion sickness.
-    function run() { if (letterTyped) return; letterTyped = true; cursor.hidden = false; let i = 0; (function type() { if (i < text.length) { out.textContent += text.charAt(i++); setTimeout(type, 38); } else finish(); })(); }
+    function run() { if (letterTyped) return; letterTyped = true; cursor.hidden = false; let i = 0; (function type() { if (i < chars.length) { out.textContent += chars[i++]; setTimeout(type, speed); } else finish(); })(); }
     if (!('IntersectionObserver' in window)) { run(); return; }
     // Trigger when the TOP of the letter scrolls into the upper ~60% of the viewport — i.e. she has
     // reached the section. A percentage `threshold` can't work here: the letter is min-height:100svh
@@ -937,7 +944,9 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
   (function finale() {
     const host = $('#finale');
     if (host && 'IntersectionObserver' in window) {
-      const io = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) { burst(); io.disconnect(); } }); }, { threshold: 0.4 });
+      // rootMargin (not a high threshold) so it fires reliably even when the finale is taller than a phone's
+      // viewport — a percentage threshold can be unreachable on small screens, leaving the burst stuck.
+      const io = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) { burst(); io.disconnect(); } }); }, { threshold: 0, rootMargin: '0px 0px -35% 0px' });
       io.observe(host);
     }
     const replay = $('#replay');
