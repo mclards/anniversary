@@ -359,7 +359,7 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
 /* ════ REDUCED MOTION ════ */
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
-  .particle, .chevron, .heart, .cursor, .music-toggle.playing, .letter-seal{ animation:none !important; }
+  .chevron, .heart, .music-toggle.playing, .letter-seal{ animation:none !important; }
   .cnum.beat, .lightbox.open img, .loader-heart, .loader-inner{ animation:none !important; }
   .moment{ transition:none !important; }
   .fade{ opacity:1 !important; animation:none; }
@@ -556,7 +556,7 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
   /* ── Particles ── */
   (function particles() {
     const wrap = $('#particles'); if (!wrap) return;
-    const count = REDUCED ? 10 : 26;
+    const count = REDUCED ? 16 : 26;
     const frag = document.createDocumentFragment();
     for (let i = 0; i < count; i++) {
       const p = document.createElement('div'); p.className = 'particle';
@@ -565,7 +565,9 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
       p.style.left = (Math.random() * 100).toFixed(2) + '%';
       p.style.bottom = (Math.random() * 100 - 10).toFixed(2) + '%';
       p.style.opacity = (0.2 + Math.random() * 0.4).toFixed(2);
-      if (!REDUCED) { const dur = 10 + Math.random() * 12; p.style.animationDuration = dur.toFixed(1) + 's'; p.style.animationDelay = '-' + (Math.random() * dur).toFixed(1) + 's'; }
+      // Always animate the ambient drift — it's a gentle GPU-cheap float and the core of the hero's mood.
+      // (Some mobile/in-app web views report prefers-reduced-motion even when the user hasn't asked for it.)
+      const dur = 10 + Math.random() * 12; p.style.animationDuration = dur.toFixed(1) + 's'; p.style.animationDelay = '-' + (Math.random() * dur).toFixed(1) + 's';
       frag.appendChild(p);
     }
     wrap.appendChild(frag);
@@ -916,7 +918,9 @@ body:not(.loaded) #loader{ opacity:1; visibility:visible; }
     const text = (c.letter || '').replace(/\r/g, '');
     const host = $('#letter');
     function finish() { cursor.hidden = true; sign.classList.add('show'); }
-    function run() { if (letterTyped) return; letterTyped = true; if (REDUCED) { out.textContent = text; finish(); return; } cursor.hidden = false; let i = 0; (function type() { if (i < text.length) { out.textContent += text.charAt(i++); setTimeout(type, 38); } else finish(); })(); }
+    // The typewriter is the letter's whole feeling, so it runs everywhere — including mobile/in-app web
+    // views that report prefers-reduced-motion. It's just text appearing, with no movement to trigger motion sickness.
+    function run() { if (letterTyped) return; letterTyped = true; cursor.hidden = false; let i = 0; (function type() { if (i < text.length) { out.textContent += text.charAt(i++); setTimeout(type, 38); } else finish(); })(); }
     if (!('IntersectionObserver' in window)) { run(); return; }
     // Trigger when the TOP of the letter scrolls into the upper ~60% of the viewport — i.e. she has
     // reached the section. A percentage `threshold` can't work here: the letter is min-height:100svh
